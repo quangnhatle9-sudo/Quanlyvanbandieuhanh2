@@ -1,0 +1,342 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chỉnh sửa người dùng{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-page {
+        width: 100%;
+        min-height: calc(100vh - 134px);
+        position: relative;
+    }
+
+    .edit-breadcrumb {
+        color: #7b8797;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .edit-breadcrumb span {
+        color: #4266d5;
+    }
+
+    .edit-heading {
+        margin-bottom: 22px;
+    }
+
+    .edit-heading h2 {
+        font-size: 23px;
+        font-weight: 700;
+        color: #19366d;
+        margin-bottom: 5px;
+    }
+
+    .edit-heading p {
+        font-size: 14px;
+        color: #718096;
+        margin: 0;
+    }
+
+    /* LỚP NỀN */
+    .edit-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(20, 35, 60, 0.18);
+        z-index: 1100;
+    }
+
+    /* PANEL BÊN PHẢI */
+    .edit-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 1101;
+        box-shadow: -5px 0 22px rgba(20, 40, 80, 0.12);
+        display: flex;
+        flex-direction: column;
+        animation: slideIn .25s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    .panel-header {
+        padding: 22px 25px;
+        border-bottom: 1px solid #e7ebf1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .panel-header h3 {
+        color: #19366d;
+        font-size: 19px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .panel-subtitle {
+        color: #8792a2;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .btn-close-panel {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 7px;
+        background: #f1f3f7;
+        color: #596579;
+        font-size: 21px;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-close-panel:hover {
+        background: #e5eaf2;
+        color: #263445;
+    }
+
+    .panel-body {
+        padding: 23px 25px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .form-section-title {
+        color: #3158b8;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 17px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .field-group {
+        margin-bottom: 17px;
+    }
+
+    .field-group label {
+        display: block;
+        font-size: 13px;
+        color: #3d4b5e;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        width: 100%;
+        min-height: 40px;
+        padding: 9px 11px;
+        border: 1px solid #d6deea;
+        border-radius: 7px;
+        color: #354052;
+        background: #fff;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+        border-color: #5274e5;
+        box-shadow: 0 0 0 3px rgba(82, 116, 229, .10);
+    }
+
+    .field-group input[type="checkbox"] {
+        width: 16px;
+        min-height: 16px;
+        margin-right: 7px;
+        accent-color: #4266d5;
+    }
+
+    .field-group label:has(input[type="checkbox"]) {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .field-error {
+        color: #d43c3c;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .non-field-errors {
+        padding: 11px 13px;
+        margin-bottom: 18px;
+        border-radius: 7px;
+        color: #b42318;
+        background: #fff0ef;
+        font-size: 13px;
+    }
+
+    .panel-footer {
+        padding: 17px 25px;
+        border-top: 1px solid #e7ebf1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .btn-cancel {
+        padding: 10px 17px;
+        border: 1px solid #d5dce6;
+        border-radius: 7px;
+        color: #526071;
+        background: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-save {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 7px;
+        color: #fff;
+        background: #4266d5;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background: #304fb8;
+    }
+
+    @media (max-width: 650px) {
+        .edit-panel {
+            max-width: calc(100% - 260px);
+            width: 100%;
+        }
+
+        .panel-header,
+        .panel-body,
+        .panel-footer {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-page">
+
+    <div class="edit-breadcrumb">
+        Quản trị hệ thống › Người dùng & phân quyền ›
+        <span>Chỉnh sửa người dùng</span>
+    </div>
+
+    <div class="edit-heading">
+        <h2>Quản lý người dùng</h2>
+        <p>Cập nhật thông tin tài khoản trong hệ thống.</p>
+    </div>
+
+</div>
+
+<!-- LỚP NỀN -->
+<div class="edit-overlay"></div>
+
+<!-- PANEL CHỈNH SỬA -->
+<section class="edit-panel">
+
+    <div class="panel-header">
+        <div>
+            <h3>Chỉnh sửa người dùng</h3>
+            <div class="panel-subtitle">
+                Cập nhật thông tin tài khoản và phân quyền.
+            </div>
+        </div>
+
+        <a href="{% url 'dashboard:user_list' %}"
+           class="btn-close-panel"
+           title="Đóng">
+            ×
+        </a>
+    </div>
+
+    <form method="POST" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+        {% csrf_token %}
+
+        <div class="panel-body">
+
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-section-title">
+                THÔNG TIN TÀI KHOẢN
+            </div>
+
+            {% for field in form %}
+                <div class="field-group">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span style="color:#dc4444;">*</span>
+                        {% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div style="color:#8994a3;font-size:11px;margin-top:5px;">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="field-error">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="panel-footer">
+
+            <a href="{% url 'dashboard:user_list' %}"
+               class="btn-cancel">
+                Hủy
+            </a>
+
+            <button type="submit" class="btn-save">
+                Lưu thay đổi
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+{% endblock %}

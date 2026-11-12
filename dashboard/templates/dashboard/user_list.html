@@ -1,0 +1,457 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Quản lý người dùng{% endblock %}
+
+{% block extra_css %}
+<style>
+    .user-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .breadcrumb {
+        font-size: 13px;
+        color: #7b8797;
+        margin-bottom: 8px;
+    }
+
+    .breadcrumb span {
+        color: #315ecb;
+    }
+
+    .page-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .page-heading h2 {
+        font-size: 23px;
+        font-weight: 700;
+        color: #19366d;
+        margin-bottom: 5px;
+    }
+
+    .page-heading p {
+        color: #697586;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* NÚT QUAY LẠI */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 16px;
+        background: #fff;
+        color: #1769aa;
+        border: 1px solid #1769aa;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .btn-back:hover {
+        background: #eef6fc;
+        color: #10578f;
+    }
+
+    /* THANH CÔNG CỤ */
+    .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .btn-primary-custom {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 15px;
+        background: #4b6fe8;
+        color: #fff;
+        border: 1px solid #4b6fe8;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .btn-primary-custom:hover {
+        background: #3658cb;
+        color: #fff;
+    }
+
+    .search-box {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .search-box input {
+        width: 100%;
+        height: 40px;
+        padding: 0 13px;
+        border: 1px solid #d5dce6;
+        border-radius: 7px;
+        outline: none;
+        font-size: 13px;
+        color: #374151;
+        background: #fff;
+    }
+
+    .search-box input:focus {
+        border-color: #4b6fe8;
+        box-shadow: 0 0 0 3px rgba(75,111,232,.1);
+    }
+
+    .btn-filter {
+        height: 40px;
+        width: 40px;
+        border: 1px solid #d5dce6;
+        border-radius: 7px;
+        background: #fff;
+        color: #596579;
+        cursor: pointer;
+        font-size: 17px;
+    }
+
+    .btn-filter:hover {
+        background: #f1f5ff;
+        border-color: #9bb0ed;
+    }
+
+    /* BẢNG DANH SÁCH */
+    .table-card {
+        background: #fff;
+        border: 1px solid #e1e6ee;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(20,40,80,.07);
+        overflow: hidden;
+    }
+
+    .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .user-table {
+        width: 100%;
+        min-width: 800px;
+        border-collapse: collapse;
+    }
+
+    .user-table thead {
+        background: #dce5ff;
+    }
+
+    .user-table th {
+        padding: 11px 9px;
+        color: #19366d;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .user-table td {
+        padding: 10px 9px;
+        border-bottom: 1px solid #e5e9ef;
+        font-size: 13px;
+        color: #354052;
+        vertical-align: middle;
+    }
+
+    .user-table tbody tr:hover {
+        background: #f7f9ff;
+    }
+
+    .user-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .user-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    .user-avatar {
+        width: 27px;
+        height: 27px;
+        border-radius: 50%;
+        background: #d9dce1;
+        flex-shrink: 0;
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    .status::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-active {
+        background: #def5e9;
+        color: #23834f;
+    }
+
+    .status-locked {
+        background: #fde5e5;
+        color: #d83b3b;
+    }
+
+    .action-link {
+        color: #526fe0;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 5px;
+    }
+
+    .action-link:hover {
+        background: #edf1ff;
+        color: #304fc0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 35px !important;
+        color: #8792a2 !important;
+    }
+
+    .no-search-result {
+        display: none;
+        text-align: center;
+        padding: 25px;
+        color: #8792a2;
+        font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+        .toolbar {
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            order: 3;
+            flex-basis: 100%;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+        }
+
+        .page-heading h2 {
+            font-size: 20px;
+        }
+
+        .btn-back {
+            padding: 8px 11px;
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="user-page">
+
+    <!-- ĐƯỜNG DẪN -->
+    <div class="breadcrumb">
+        Quản trị hệ thống › <span>Người dùng & phân quyền</span>
+    </div>
+
+    <!-- TIÊU ĐỀ VÀ NÚT QUAY LẠI -->
+    <div class="page-heading">
+
+        <div>
+            <h2>Quản lý người dùng</h2>
+            <p>Quản lý tài khoản và phân quyền người dùng</p>
+        </div>
+
+        <a href="{% url 'dashboard:system_management_home' %}"
+           class="btn-back">
+            ← Quay lại
+        </a>
+
+    </div>
+
+
+    <!-- THANH CÔNG CỤ -->
+    <div class="toolbar">
+
+        <a href="{% url 'dashboard:user_create' %}"
+           class="btn-primary-custom">
+            <span>＋</span> Thêm người dùng
+        </a>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="userSearch"
+                placeholder="Tìm theo tên, tài khoản..."
+            >
+        </div>
+
+        <button type="button"
+                class="btn-filter"
+                title="Tìm kiếm trong danh sách">
+            ⚲
+        </button>
+
+    </div>
+
+
+    <!-- BẢNG NGƯỜI DÙNG -->
+    <div class="table-card">
+
+        <div class="table-scroll">
+
+            <table class="user-table" id="userTable">
+
+                <thead>
+                    <tr>
+                        <th>Họ tên</th>
+                        <th>Tài khoản</th>
+                        <th>Vai trò</th>
+                        <th>Tổ/Bộ phận</th>
+                        <th>Trạng thái</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for nguoi_dung in danh_sach_nguoi_dung %}
+
+                    <tr class="user-row">
+
+                        <td>
+                            <div class="user-name-cell">
+                                <span class="user-avatar"></span>
+                                <span>{{ nguoi_dung.ho_ten }}</span>
+                            </div>
+                        </td>
+
+                        <td>{{ nguoi_dung.username }}</td>
+
+                        <td>
+                            {% if nguoi_dung.vai_tro %}
+                                {{ nguoi_dung.vai_tro.ten_vai_tro }}
+                            {% else %}
+                                Chưa phân quyền
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if nguoi_dung.phong_ban %}
+                                {{ nguoi_dung.phong_ban.ten_phong_ban }}
+                            {% else %}
+                                Chưa phân công
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if nguoi_dung.is_active %}
+                                <span class="status status-active">
+                                    Hoạt động
+                                </span>
+                            {% else %}
+                                <span class="status status-locked">
+                                    Khóa
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            <a href="{% url 'dashboard:user_update' nguoi_dung.pk %}"
+                               class="action-link"
+                               title="Chỉnh sửa người dùng">
+                                ⋮
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            Chưa có tài khoản người dùng nào.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <div id="noSearchResult" class="no-search-result">
+                Không tìm thấy người dùng phù hợp.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    // Tìm kiếm trực tiếp theo tên, tài khoản và thông tin trong bảng
+    const userSearch = document.getElementById("userSearch");
+    const userRows = document.querySelectorAll("#userTable .user-row");
+    const noSearchResult = document.getElementById("noSearchResult");
+
+    userSearch.addEventListener("input", function () {
+        const keyword = this.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        userRows.forEach(function (row) {
+            const rowText = row.innerText.toLowerCase();
+            const matched = rowText.includes(keyword);
+
+            row.style.display = matched ? "" : "none";
+
+            if (matched) {
+                visibleCount++;
+            }
+        });
+
+        noSearchResult.style.display =
+            visibleCount === 0 && userRows.length > 0 ? "block" : "none";
+    });
+</script>
+{% endblock %}

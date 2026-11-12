@@ -1,0 +1,196 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chỉnh sửa loại văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .document-form-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.25);
+        z-index: 100;
+    }
+
+    .document-form-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 101;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .document-form-header {
+        padding: 25px 28px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .document-form-header h3 {
+        font-size: 21px;
+        font-weight: 700;
+        color: #17365d;
+        margin-bottom: 6px;
+    }
+
+    .document-form-header p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .document-form-body {
+        padding: 25px 28px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .document-form-body label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .document-form-body input,
+    .document-form-body select,
+    .document-form-body textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .document-form-body input:focus,
+    .document-form-body select:focus,
+    .document-form-body textarea:focus {
+        border-color: #1769aa;
+        box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
+    }
+
+    .document-form-footer {
+        padding: 18px 28px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .document-form-footer .btn-save {
+        background: #1769aa;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .document-form-footer .btn-save:hover {
+        background: #10578f;
+        color: #fff;
+    }
+
+    .document-form-footer .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        padding: 10px 20px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .document-form-footer .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    @media (max-width: 768px) {
+        .document-form-overlay {
+            left: 0;
+        }
+
+        .document-form-panel {
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="document-form-overlay"></div>
+
+<div class="document-form-panel">
+
+    <div class="document-form-header">
+        <h3>Chỉnh sửa loại văn bản</h3>
+        <p>Cập nhật thông tin loại văn bản trong hệ thống.</p>
+    </div>
+
+    <form method="POST" id="document-type-update-form"
+          style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+
+        {% csrf_token %}
+
+        <div class="document-form-body">
+
+            {% for field in form %}
+                <div class="mb-4">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="text-muted small mt-1">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="document-form-footer">
+
+            <a href="{% url 'dashboard:document_type_list' %}"
+               class="btn-cancel">
+                Hủy
+            </a>
+
+            <button type="submit" form="document-type-update-form"
+                    class="btn-save">
+                Lưu thay đổi
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

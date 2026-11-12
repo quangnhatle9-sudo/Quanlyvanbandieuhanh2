@@ -1,0 +1,277 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Thêm người dùng{% endblock %}
+
+{% block extra_css %}
+<style>
+    .user-form-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.35);
+        z-index: 1100;
+    }
+
+    .user-form-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 1101;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -8px 0 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .user-form-header {
+        padding: 24px 28px;
+        border-bottom: 1px solid #e8edf3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-form-header h4 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #163b65;
+    }
+
+    .user-form-header p {
+        margin: 6px 0 0;
+        color: #7b8794;
+        font-size: 13px;
+    }
+
+    .user-form-close {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #f1f4f8;
+        color: #526174;
+        font-size: 23px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-form-close:hover {
+        background: #e3eaf2;
+        color: #163b65;
+    }
+
+    .user-form-body {
+        padding: 24px 28px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .user-form-body label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #34445a;
+    }
+
+    .user-form-body input,
+    .user-form-body select,
+    .user-form-body textarea {
+        width: 100%;
+        min-height: 42px;
+        padding: 9px 12px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 14px;
+        color: #263445;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .user-form-body input:focus,
+    .user-form-body select:focus,
+    .user-form-body textarea:focus {
+        border-color: #2875c7;
+        box-shadow: 0 0 0 3px rgba(40, 117, 199, 0.1);
+    }
+
+    .user-form-field {
+        margin-bottom: 19px;
+    }
+
+    .user-form-error {
+        margin-top: 5px;
+        color: #dc3545;
+        font-size: 12px;
+    }
+
+    .user-form-footer {
+        padding: 18px 28px;
+        border-top: 1px solid #e8edf3;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .user-form-footer a,
+    .user-form-footer button {
+        padding: 10px 18px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .user-form-submit {
+        background: #1769aa;
+        color: #fff;
+        border: none;
+    }
+
+    .user-form-submit:hover {
+        background: #10578f;
+    }
+
+    @media (max-width: 768px) {
+        .user-form-overlay {
+            left: 0;
+        }
+
+        .user-form-panel {
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="mb-3">
+        <small class="text-muted">
+            Quản trị hệ thống <span class="mx-2">›</span>
+            Người dùng & phân quyền
+        </small>
+        <h3 class="fw-bold mt-2">Quản lý người dùng</h3>
+    </div>
+</div>
+
+<div class="user-form-overlay"></div>
+
+<div class="user-form-panel">
+
+    <div class="user-form-header">
+        <div>
+            <h4>Thêm người dùng</h4>
+            <p>Nhập thông tin tài khoản cán bộ, giáo viên hoặc nhân viên.</p>
+        </div>
+
+        <a href="{% url 'dashboard:user_list' %}"
+           class="user-form-close"
+           title="Đóng">
+            &times;
+        </a>
+    </div>
+
+    <div class="user-form-body">
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="user-form-field">
+                <label for="{{ form.ho_ten.id_for_label }}">Họ và tên</label>
+                {{ form.ho_ten }}
+                {% if form.ho_ten.errors %}
+                    <div class="user-form-error">{{ form.ho_ten.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.username.id_for_label }}">Tên đăng nhập</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="user-form-error">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.email.id_for_label }}">Địa chỉ email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="user-form-error">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.vai_tro.id_for_label }}">Vai trò</label>
+                {{ form.vai_tro }}
+                {% if form.vai_tro.errors %}
+                    <div class="user-form-error">{{ form.vai_tro.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.phong_ban.id_for_label }}">Phòng ban</label>
+                {{ form.phong_ban }}
+                {% if form.phong_ban.errors %}
+                    <div class="user-form-error">{{ form.phong_ban.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.mat_khau.id_for_label }}">Mật khẩu</label>
+                {{ form.mat_khau }}
+                {% if form.mat_khau.errors %}
+                    <div class="user-form-error">{{ form.mat_khau.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-form-field">
+                <label for="{{ form.xac_nhan_mat_khau.id_for_label }}">
+                    Xác nhận mật khẩu
+                </label>
+                {{ form.xac_nhan_mat_khau }}
+                {% if form.xac_nhan_mat_khau.errors %}
+                    <div class="user-form-error">
+                        {{ form.xac_nhan_mat_khau.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="user-form-footer">
+        <a href="{% url 'dashboard:user_list' %}"
+           class="btn btn-light border">
+            Hủy
+        </a>
+
+        <button type="submit"
+                form="user-create-form"
+                class="user-form-submit">
+            Thêm người dùng
+        </button>
+    </div>
+
+</div>
+
+{% endblock %}

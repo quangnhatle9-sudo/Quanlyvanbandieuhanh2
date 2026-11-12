@@ -1,0 +1,759 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Kho mẫu văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .template-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 18px;
+        color: #8491a2;
+        font-size: 13px;
+    }
+
+    .template-breadcrumb a {
+        color: #2864a8;
+        text-decoration: none;
+    }
+
+    .template-breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .template-heading {
+        margin-bottom: 25px;
+    }
+
+    .template-heading h2 {
+        margin: 0 0 8px;
+        color: #17365D;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .template-heading p {
+        margin: 0;
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .template-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .template-filters {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        flex-wrap: wrap;
+    }
+
+    .template-search {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+        max-width: 360px;
+    }
+
+    .template-search input {
+        width: 100%;
+        height: 42px;
+        padding: 0 14px 0 40px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        outline: none;
+        background: #fff;
+        color: #263445;
+        font-size: 13px;
+    }
+
+    .template-search input:focus,
+    .template-select:focus {
+        border-color: #5b9bd5;
+        box-shadow: 0 0 0 3px rgba(40, 100, 168, 0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8a97a8;
+        font-size: 16px;
+    }
+
+    .template-select {
+        height: 42px;
+        min-width: 155px;
+        padding: 0 30px 0 12px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        background: #fff;
+        color: #526174;
+        outline: none;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .btn-filter {
+        height: 42px;
+        padding: 0 16px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        background: #fff;
+        color: #526174;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-filter:hover {
+        background: #f3f7fb;
+        border-color: #9bbce0;
+    }
+
+    .template-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-back-template,
+    .btn-add-template {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        height: 42px;
+        padding: 0 16px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: 0.2s;
+    }
+
+    .btn-back-template {
+        border: 1px solid #dce2e9;
+        background: #fff;
+        color: #526174;
+    }
+
+    .btn-back-template:hover {
+        background: #f0f2f5;
+        border-color: #cbd3dd;
+        color: #263445;
+    }
+
+    .btn-add-template {
+        border: 1px solid #2864a8;
+        background: #2864a8;
+        color: #fff;
+    }
+
+    .btn-add-template:hover {
+        background: #174477;
+        border-color: #174477;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .template-table-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(24, 48, 80, 0.04);
+    }
+
+    .table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 20px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .table-header h3 {
+        margin: 0;
+        color: #263445;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .table-count {
+        color: #8491a2;
+        font-size: 12px;
+    }
+
+    .template-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .template-table {
+        width: 100%;
+        min-width: 930px;
+        border-collapse: collapse;
+    }
+
+    .template-table thead {
+        background: #f7f9fc;
+    }
+
+    .template-table th {
+        padding: 14px 15px;
+        color: #66758a;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: left;
+        white-space: nowrap;
+        border-bottom: 1px solid #e9edf2;
+    }
+
+    .template-table td {
+        padding: 15px;
+        border-bottom: 1px solid #edf0f4;
+        color: #526174;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .template-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .template-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .col-number {
+        width: 65px;
+        text-align: center !important;
+    }
+
+    .template-name {
+        color: #263f5e;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .template-standard {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background: #edf5ff;
+        color: #2864a8;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .template-type {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: #f1f5f9;
+        color: #526174;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .template-legal {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .template-date {
+        white-space: nowrap;
+        color: #64748b;
+    }
+
+    /* Các nút thao tác trong bảng */
+    .template-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-template-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 70px;
+        height: 34px;
+        padding: 0 11px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .btn-template-view {
+        color: #2864a8;
+        background: #edf5ff;
+        border-color: #d5e7fa;
+    }
+
+    .btn-template-view:hover {
+        color: #fff;
+        background: #2864a8;
+        border-color: #2864a8;
+    }
+
+    .btn-template-download {
+        color: #218653;
+        background: #eaf7ef;
+        border-color: #ccebd7;
+    }
+
+    .btn-template-download:hover {
+        color: #fff;
+        background: #218653;
+        border-color: #218653;
+    }
+
+    /* Nút xóa */
+    .btn-template-delete {
+        color: #dc3545;
+        background: #fff0f1;
+        border-color: #f5d0d3;
+    }
+
+    .btn-template-delete:hover {
+        color: #fff;
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .template-delete-form {
+        display: inline-flex;
+        margin: 0;
+    }
+
+    .download-disabled {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid #e5eaf0;
+        border-radius: 6px;
+        background: #f8fafc;
+        color: #a0aab7;
+        font-size: 12px;
+        cursor: not-allowed;
+    }
+
+    .template-empty {
+        padding: 55px 20px !important;
+        text-align: center;
+    }
+
+    .empty-icon {
+        margin-bottom: 12px;
+        font-size: 34px;
+    }
+
+    .empty-title {
+        margin-bottom: 6px;
+        color: #526174;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .empty-description {
+        color: #94a0ae;
+        font-size: 13px;
+    }
+
+    .template-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 20px;
+        border-top: 1px solid #edf0f4;
+        flex-wrap: wrap;
+    }
+
+    .pagination-info {
+        color: #8491a2;
+        font-size: 12px;
+    }
+
+    .pagination-list {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .pagination-list a,
+    .pagination-list span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+        padding: 0 9px;
+        border: 1px solid #e1e7ef;
+        border-radius: 5px;
+        color: #526174;
+        text-decoration: none;
+        font-size: 12px;
+        background: #fff;
+    }
+
+    .pagination-list a:hover {
+        background: #f1f6fc;
+        border-color: #9bbce0;
+    }
+
+    .pagination-list .current {
+        background: #2864a8;
+        border-color: #2864a8;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .pagination-list .disabled {
+        color: #b5bec9;
+        background: #f8fafc;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        .template-toolbar {
+            align-items: stretch;
+        }
+
+        .template-filters {
+            width: 100%;
+        }
+
+        .template-search {
+            max-width: none;
+            flex-basis: 100%;
+        }
+
+        .template-select {
+            flex: 1;
+        }
+
+        .template-toolbar-actions {
+            width: 100%;
+        }
+
+        .btn-back-template,
+        .btn-add-template {
+            flex: 1;
+        }
+
+        .template-pagination {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="template-page">
+
+    <!-- TIÊU ĐỀ VÀ ĐIỀU HƯỚNG -->
+    <div class="template-breadcrumb">
+        <a href="{% url 'dashboard:system_management_home' %}">
+            Quản trị hệ thống
+        </a>
+        <span>›</span>
+        <span>Kho mẫu văn bản</span>
+    </div>
+
+    <div class="template-heading">
+        <h2>Kho mẫu văn bản</h2>
+        <p>
+            Quản lý và tra cứu mẫu văn bản theo Nghị định 30/2020/NĐ-CP
+        </p>
+    </div>
+
+    <!-- THANH TÌM KIẾM VÀ BỘ LỌC -->
+    <form method="GET" class="template-toolbar">
+
+        <div class="template-filters">
+
+            <div class="template-search">
+                <span class="search-icon">⌕</span>
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ tu_khoa }}"
+                    placeholder="Tìm kiếm mẫu văn bản..."
+                >
+            </div>
+
+            <select name="loai_van_ban" class="template-select">
+                <option value="">Tất cả loại văn bản</option>
+
+                {% for loai in danh_sach_loai_van_ban %}
+                    <option
+                        value="{{ loai.pk }}"
+                        {% if loai_dang_chon == loai.pk|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ loai }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <select name="nam" class="template-select">
+                <option value="">Tất cả năm</option>
+
+                {% for nam in danh_sach_nam %}
+                    <option
+                        value="{{ nam.year }}"
+                        {% if nam_dang_chon == nam.year|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ nam.year }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn-filter">
+                Lọc dữ liệu
+            </button>
+
+        </div>
+
+        <div class="template-toolbar-actions">
+            <a
+                href="{% url 'dashboard:system_management_home' %}"
+                class="btn-back-template"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Quay lại
+            </a>
+
+            <a
+                href="{% url 'dashboard:template_create' %}"
+                class="btn-add-template"
+            >
+                <span>＋</span>
+                Thêm mẫu
+            </a>
+        </div>
+
+    </form>
+
+    <!-- BẢNG DANH SÁCH MẪU VĂN BẢN -->
+    <div class="template-table-card">
+
+        <div class="table-header">
+            <h3>Danh sách mẫu văn bản</h3>
+
+            <span class="table-count">
+                {{ page_obj.paginator.count }} mẫu văn bản
+            </span>
+        </div>
+
+        <div class="template-table-wrapper">
+            <table class="template-table">
+
+                <thead>
+                    <tr>
+                        <th class="col-number">STT</th>
+                        <th>Tên mẫu</th>
+                        <th>Loại văn bản</th>
+                        <th>Căn cứ</th>
+                        <th>Cập nhật</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for mau in danh_sach_mau %}
+                    <tr>
+
+                        <td class="col-number">
+                            {{ forloop.counter|add:page_obj.start_index|add:"-1" }}
+                        </td>
+
+                        <td>
+                            <div class="template-name">
+                                {{ mau.ten_mau }}
+                            </div>
+
+                            <span class="template-standard">
+                                Chuẩn NĐ 30/2020/NĐ-CP
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="template-type">
+                                {{ mau.ma_loai }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="template-legal">
+                                {{ mau.can_cu }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="template-date">
+                                {{ mau.ngay_cap_nhat|date:"d/m/Y" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="template-actions">
+
+                                <!-- NÚT XEM -->
+                                <a
+                                    href="{% url 'dashboard:template_detail' mau.ma_mau %}"
+                                    class="btn-template-action btn-template-view"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                    Xem
+                                </a>
+
+                                <!-- NÚT TẢI -->
+                                {% if mau.file_mau %}
+                                    <a
+                                        href="{% url 'dashboard:template_download' mau.ma_mau %}"
+                                        class="btn-template-action btn-template-download"
+                                    >
+                                        <i class="bi bi-download"></i>
+                                        Tải
+                                    </a>
+                                {% else %}
+                                    <span class="download-disabled">
+                                        Chưa có file
+                                    </span>
+                                {% endif %}
+
+                                <!-- NÚT XÓA -->
+                                <form
+                                    method="POST"
+                                    action="{% url 'dashboard:template_delete' mau.ma_mau %}"
+                                    class="template-delete-form"
+                                    onsubmit="return confirm('Mây có chắc chắn muốn xóa mẫu văn bản này không? Thao tác này không thể hoàn tác.');"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn-template-action btn-template-delete"
+                                    >
+                                        <i class="bi bi-trash"></i>
+                                        Xóa
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6" class="template-empty">
+                            <div class="empty-icon">📂</div>
+
+                            <div class="empty-title">
+                                Chưa có mẫu văn bản nào
+                            </div>
+
+                            <div class="empty-description">
+                                Mây có thể thêm mẫu văn bản mới để lưu trữ và quản lý tại đây.
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- PHÂN TRANG -->
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="template-pagination">
+
+            <div class="pagination-info">
+                Trang {{ page_obj.number }}
+                / {{ page_obj.paginator.num_pages }}
+            </div>
+
+            <div class="pagination-list">
+
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ tu_khoa|urlencode }}&loai_van_ban={{ loai_dang_chon|urlencode }}&nam={{ nam_dang_chon|urlencode }}&page={{ page_obj.previous_page_number }}">
+                        ‹
+                    </a>
+                {% else %}
+                    <span class="disabled">‹</span>
+                {% endif %}
+
+                {% for so_trang in page_obj.paginator.page_range %}
+
+                    {% if page_obj.number == so_trang %}
+                        <span class="current">
+                            {{ so_trang }}
+                        </span>
+                    {% else %}
+                        <a href="?q={{ tu_khoa|urlencode }}&loai_van_ban={{ loai_dang_chon|urlencode }}&nam={{ nam_dang_chon|urlencode }}&page={{ so_trang }}">
+                            {{ so_trang }}
+                        </a>
+                    {% endif %}
+
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ tu_khoa|urlencode }}&loai_van_ban={{ loai_dang_chon|urlencode }}&nam={{ nam_dang_chon|urlencode }}&page={{ page_obj.next_page_number }}">
+                        ›
+                    </a>
+                {% else %}
+                    <span class="disabled">›</span>
+                {% endif %}
+
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,427 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Thêm mẫu văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-form-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .form-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 18px;
+        color: #8491a2;
+        font-size: 13px;
+    }
+
+    .form-breadcrumb a {
+        color: #2864a8;
+        text-decoration: none;
+    }
+
+    .form-breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .form-heading {
+        margin-bottom: 24px;
+    }
+
+    .form-heading h2 {
+        margin: 0 0 8px;
+        color: #17365D;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .form-heading p {
+        margin: 0;
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .template-form-card {
+        max-width: 950px;
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(24, 48, 80, 0.04);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 19px 24px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .form-card-header h3 {
+        margin: 0;
+        color: #263445;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .form-card-header p {
+        margin: 6px 0 0;
+        color: #8491a2;
+        font-size: 12px;
+    }
+
+    .template-form-body {
+        padding: 26px 24px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        margin-bottom: 21px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        margin-bottom: 9px;
+        color: #405168;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .required {
+        color: #dc3545;
+        margin-left: 3px;
+    }
+
+    .form-control {
+        width: 100%;
+        min-height: 43px;
+        padding: 10px 13px;
+        border: 1px solid #dce3eb;
+        border-radius: 6px;
+        outline: none;
+        background: #fff;
+        color: #263445;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #5b9bd5;
+        box-shadow: 0 0 0 3px rgba(40, 100, 168, 0.1);
+    }
+
+    textarea.form-control {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    input[type="file"].form-control {
+        padding: 9px;
+        cursor: pointer;
+    }
+
+    .form-hint {
+        margin-top: 7px;
+        color: #94a0ae;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .field-error {
+        margin-top: 6px;
+        color: #dc3545;
+        font-size: 12px;
+    }
+
+    .form-error-box {
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        border: 1px solid #f5c2c7;
+        border-radius: 6px;
+        background: #f8d7da;
+        color: #842029;
+        font-size: 13px;
+    }
+
+    .form-section-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 23px;
+        padding: 13px 15px;
+        border: 1px solid #dceafa;
+        border-radius: 7px;
+        background: #f3f8ff;
+        color: #526b89;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .form-section-note span {
+        font-size: 17px;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 11px;
+        padding: 17px 24px;
+        border-top: 1px solid #edf0f4;
+        background: #fcfdff;
+    }
+
+    .btn-cancel,
+    .btn-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 105px;
+        height: 40px;
+        padding: 0 17px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-cancel {
+        border: 1px solid #dce3eb;
+        background: #fff;
+        color: #526174;
+    }
+
+    .btn-cancel:hover {
+        background: #f3f6fa;
+        color: #263445;
+    }
+
+    .btn-submit {
+        border: 1px solid #2864a8;
+        background: #2864a8;
+        color: #fff;
+    }
+
+    .btn-submit:hover {
+        border-color: #174477;
+        background: #174477;
+    }
+
+    @media (max-width: 700px) {
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .template-form-body {
+            padding: 20px 16px;
+        }
+
+        .form-card-header {
+            padding: 17px 16px;
+        }
+
+        .form-actions {
+            padding: 15px 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="template-form-page">
+
+    <!-- ĐIỀU HƯỚNG -->
+    <div class="form-breadcrumb">
+        <a href="{% url 'dashboard:system_management_home' %}">
+            Quản trị hệ thống
+        </a>
+        <span>›</span>
+        <a href="{% url 'dashboard:template_list' %}">
+            Kho mẫu văn bản
+        </a>
+        <span>›</span>
+        <span>Thêm mẫu văn bản</span>
+    </div>
+
+    <!-- TIÊU ĐỀ -->
+    <div class="form-heading">
+        <h2>Thêm mẫu văn bản</h2>
+        <p>
+            Thêm mới và lưu trữ biểu mẫu văn bản trong hệ thống.
+        </p>
+    </div>
+
+    <!-- FORM THÊM MẪU -->
+    <div class="template-form-card">
+
+        <div class="form-card-header">
+            <h3>Thông tin mẫu văn bản</h3>
+            <p>
+                Vui lòng nhập đầy đủ các thông tin cần thiết bên dưới.
+            </p>
+        </div>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+            {% csrf_token %}
+
+            <div class="template-form-body">
+
+                {% if form.non_field_errors %}
+                    <div class="form-error-box">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-section-note">
+                    <span>ℹ️</span>
+                    <div>
+                        Mẫu văn bản được quản lý theo Nghị định
+                        30/2020/NĐ-CP. Hãy cung cấp thông tin chính xác
+                        để thuận tiện cho việc tra cứu và sử dụng.
+                    </div>
+                </div>
+
+                <!-- DÒNG 1 -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="{{ form.ma_mau.id_for_label }}">
+                            Mã mẫu văn bản
+                            <span class="required">*</span>
+                        </label>
+
+                        {{ form.ma_mau }}
+
+                        {% for error in form.ma_mau.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.ten_mau.id_for_label }}">
+                            Tên mẫu văn bản
+                            <span class="required">*</span>
+                        </label>
+
+                        {{ form.ten_mau }}
+
+                        {% for error in form.ten_mau.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <!-- DÒNG 2 -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="{{ form.ma_loai.id_for_label }}">
+                            Loại văn bản
+                            <span class="required">*</span>
+                        </label>
+
+                        {{ form.ma_loai }}
+
+                        {% for error in form.ma_loai.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.can_cu.id_for_label }}">
+                            Căn cứ pháp lý
+                            <span class="required">*</span>
+                        </label>
+
+                        {{ form.can_cu }}
+
+                        {% for error in form.can_cu.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <!-- FILE MẪU -->
+                <div class="form-row">
+
+                    <div class="form-group full-width">
+                        <label for="{{ form.file_mau.id_for_label }}">
+                            File mẫu văn bản
+                        </label>
+
+                        {{ form.file_mau }}
+
+                        <div class="form-hint">
+                            Tải lên file biểu mẫu để người dùng có thể
+                            xem và tải xuống khi cần thiết.
+                        </div>
+
+                        {% for error in form.file_mau.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <!-- MÔ TẢ -->
+                <div class="form-row">
+
+                    <div class="form-group full-width">
+                        <label for="{{ form.mo_ta.id_for_label }}">
+                            Mô tả
+                        </label>
+
+                        {{ form.mo_ta }}
+
+                        {% for error in form.mo_ta.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- NÚT THAO TÁC -->
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'dashboard:template_list' %}"
+                    class="btn-cancel"
+                >
+                    Hủy
+                </a>
+
+                <button type="submit" class="btn-submit">
+                    Lưu mẫu văn bản
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

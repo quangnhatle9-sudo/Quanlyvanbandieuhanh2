@@ -1,0 +1,224 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Thêm loại văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .document-form-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.28);
+        z-index: 1000;
+    }
+
+    .document-form-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
+        animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+
+    .document-form-header {
+        padding: 24px 28px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .document-form-header h4 {
+        font-size: 21px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #1e293b;
+    }
+
+    .document-form-header p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .document-form-body {
+        padding: 26px 28px;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .document-form-body label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .document-form-body input,
+    .document-form-body select,
+    .document-form-body textarea {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .document-form-body input:focus,
+    .document-form-body select:focus,
+    .document-form-body textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .document-form-body textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .document-form-body .mb-3 {
+        margin-bottom: 22px !important;
+    }
+
+    .document-form-footer {
+        padding: 18px 28px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .document-form-footer .btn-cancel,
+    .document-form-footer .btn-save {
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    /* Nút Hủy */
+    .document-form-footer .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+    }
+
+    .document-form-footer .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    /* Nút Lưu - đồng bộ với giao diện Quản lý người dùng */
+    .document-form-footer .btn-save {
+        background: #1769aa;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .document-form-footer .btn-save:hover {
+        background: #10578f;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .document-form-overlay {
+            left: 0;
+        }
+
+        .document-form-panel {
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="document-form-overlay"></div>
+
+<div class="document-form-panel">
+
+    <div class="document-form-header">
+        <h4>Thêm loại văn bản</h4>
+        <p>Nhập thông tin loại văn bản mới vào hệ thống.</p>
+    </div>
+
+    <form method="POST" id="document-type-create-form"
+          style="display:flex; flex-direction:column; flex:1; min-height:0;">
+        {% csrf_token %}
+
+        <div class="document-form-body">
+
+            {% for field in form %}
+                <div class="mb-3">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span class="text-danger">*</span>
+                        {% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="text-muted small mt-1">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="document-form-footer">
+
+            <a href="{% url 'dashboard:document_type_list' %}"
+               class="btn btn-cancel">
+                Hủy
+            </a>
+
+            <button type="submit" class="btn btn-save">
+                Lưu loại văn bản
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,1448 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Tổng quan hệ thống{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard {
+        width: 100%;
+        color: #263445;
+    }
+
+    .dashboard-heading {
+        margin-bottom: 22px;
+    }
+
+    .dashboard-heading h2 {
+        font-size: 25px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #17365D;
+    }
+
+    .dashboard-heading p {
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .section-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #17365D;
+        margin-bottom: 16px;
+    }
+
+    /* BỘ LỌC VÀ TÌM KIẾM */
+    .filter-card {
+        background: #FFFFFF;
+        border: 1px solid #E8EDF3;
+        border-radius: 12px;
+        padding: 22px;
+        margin-bottom: 28px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .filter-heading {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 18px;
+        color: #17365D;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .filter-field {
+        min-width: 0;
+    }
+
+    .filter-field label {
+        display: block;
+        color: #526174;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .filter-field input,
+    .filter-field select {
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        border: 1px solid #DCE3EC;
+        border-radius: 7px;
+        outline: none;
+        background: #FFFFFF;
+        color: #334155;
+        font-size: 13px;
+        box-sizing: border-box;
+    }
+
+    .filter-field input:focus,
+    .filter-field select:focus {
+        border-color: #3173DD;
+        box-shadow: 0 0 0 3px rgba(49, 115, 221, 0.1);
+    }
+
+    .filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        height: 40px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 7px;
+        background: #3173DD;
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .filter-button:hover {
+        background: #245DB5;
+        color: #FFFFFF;
+    }
+
+    .reset-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        padding: 0 18px;
+        border: 1px solid #DCE3EC;
+        border-radius: 7px;
+        background: #FFFFFF;
+        color: #64748B;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .reset-button:hover {
+        background: #F7F9FC;
+        color: #17365D;
+    }
+
+    .filter-result {
+        margin-top: 14px;
+        color: #718096;
+        font-size: 12px;
+    }
+
+    /* 4 THẺ THỐNG KÊ */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: #FFFFFF;
+        border: 1px solid #E8EDF3;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        min-width: 0;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #718096;
+        margin-bottom: 12px;
+        font-weight: 500;
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: 700;
+        color: #17365D;
+    }
+
+    .stat-note {
+        font-size: 12px;
+        color: #8A94A3;
+        margin-top: 10px;
+        line-height: 1.5;
+    }
+
+    .stat-card.pending {
+        border-top: 4px solid #F5A623;
+    }
+
+    .stat-card.processing {
+        border-top: 4px solid #3173DD;
+    }
+
+    .stat-card.overdue {
+        border-top: 4px solid #E55353;
+    }
+
+    .stat-card.completed {
+        border-top: 4px solid #20A779;
+    }
+
+    /* KHU VỰC PHÂN TÍCH */
+    .analysis-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .analysis-card {
+        background: #FFFFFF;
+        border: 1px solid #E8EDF3;
+        border-radius: 12px;
+        padding: 22px;
+        min-width: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .analysis-description {
+        color: #8A94A3;
+        font-size: 12px;
+        margin-top: -8px;
+        margin-bottom: 22px;
+        line-height: 1.5;
+    }
+
+    /* BIỂU ĐỒ DONUT */
+    .donut-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 28px;
+        flex-wrap: wrap;
+        padding: 10px 0;
+    }
+
+    .donut-chart {
+        width: 210px;
+        height: 210px;
+        min-width: 210px;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #E8EDF3;
+    }
+
+    .donut-chart::before {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        background: #FFFFFF;
+        border-radius: 50%;
+    }
+
+    .donut-center {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .donut-total {
+        display: block;
+        font-size: 30px;
+        font-weight: 700;
+        color: #17365D;
+    }
+
+    .donut-label {
+        display: block;
+        font-size: 12px;
+        color: #8A94A3;
+        margin-top: 3px;
+    }
+
+    .donut-legend {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .legend-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 0;
+        border-bottom: 1px solid #EEF1F5;
+    }
+
+    .legend-item:last-child {
+        border-bottom: none;
+    }
+
+    .legend-name {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #526174;
+        font-size: 13px;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .legend-pending {
+        background: #F5A623;
+    }
+
+    .legend-processing {
+        background: #3173DD;
+    }
+
+    .legend-completed {
+        background: #20A779;
+    }
+
+    .legend-other {
+        background: #8A94A3;
+    }
+
+    .legend-value {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .legend-value strong {
+        display: block;
+        font-size: 15px;
+        color: #263445;
+    }
+
+    .legend-value span {
+        font-size: 11px;
+        color: #8A94A3;
+    }
+
+    .chart-empty {
+        text-align: center;
+        color: #8A94A3;
+        font-size: 13px;
+        margin-top: 14px;
+    }
+
+    /* QUY MÔ DỮ LIỆU */
+    .summary-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #F7F9FC;
+        border-radius: 8px;
+        gap: 12px;
+    }
+
+    .summary-item span {
+        color: #64748B;
+        font-size: 13px;
+    }
+
+    .summary-item strong {
+        color: #17365D;
+        font-size: 18px;
+    }
+
+    /* HAI BIỂU ĐỒ CÙNG MỘT HÀNG */
+    .chart-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .line-chart-card,
+    .bar-chart-card {
+        min-width: 0;
+        margin-bottom: 0;
+    }
+
+    /* BIỂU ĐỒ ĐƯỜNG */
+    .line-chart-container {
+        width: 100%;
+        overflow-x: auto;
+        padding-top: 8px;
+    }
+
+    .line-chart {
+        display: block;
+        width: 100%;
+        min-width: 350px;
+        height: auto;
+    }
+
+    .chart-grid-line {
+        stroke: #E8EDF3;
+        stroke-width: 1;
+        stroke-dasharray: 5 5;
+    }
+
+    .chart-axis {
+        stroke: #CBD5E1;
+        stroke-width: 1.2;
+    }
+
+    .chart-line {
+        fill: none;
+        stroke: #3173DD;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .chart-point {
+        fill: #FFFFFF;
+        stroke: #3173DD;
+        stroke-width: 3;
+    }
+
+    .chart-point-label {
+        font-size: 12px;
+        font-weight: 700;
+        fill: #17365D;
+        text-anchor: middle;
+    }
+
+    .chart-month-label {
+        font-size: 12px;
+        fill: #718096;
+        text-anchor: middle;
+    }
+
+    .chart-legend {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #64748B;
+        font-size: 12px;
+        margin-top: 12px;
+    }
+
+    .chart-legend-line {
+        width: 22px;
+        height: 3px;
+        background: #3173DD;
+        border-radius: 5px;
+    }
+
+    /* BIỂU ĐỒ CỘT */
+    .bar-chart-list {
+        display: grid;
+        gap: 25px;
+        padding: 12px 0 5px;
+    }
+
+    .bar-chart-item {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr) 35px;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .bar-chart-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #526174;
+    }
+
+    .bar-chart-track {
+        height: 18px;
+        background: #EEF2F7;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .bar-chart-fill {
+        height: 100%;
+        border-radius: 20px;
+        min-width: 0;
+        transition: width 0.3s ease;
+    }
+
+    .bar-chart-fill.incoming {
+        background: #3173DD;
+    }
+
+    .bar-chart-fill.outgoing {
+        background: #20A779;
+    }
+
+    .bar-chart-fill.draft {
+        background: #F5A623;
+    }
+
+    .bar-chart-value {
+        text-align: right;
+        font-size: 14px;
+        font-weight: 700;
+        color: #17365D;
+    }
+
+    .bar-chart-note {
+        font-size: 12px;
+        color: #8A94A3;
+        margin-top: 22px;
+        line-height: 1.5;
+    }
+
+    /* BẢNG VĂN BẢN */
+    .document-card {
+        margin-bottom: 30px;
+    }
+
+    .document-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .document-table {
+        width: 100%;
+        min-width: 850px;
+        border-collapse: collapse;
+    }
+
+    .document-table th {
+        background: #F7F9FC;
+        color: #64748B;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: left;
+        padding: 14px 15px;
+        border-bottom: 1px solid #E8EDF3;
+        white-space: nowrap;
+    }
+
+    .document-table td {
+        padding: 14px 15px;
+        border-bottom: 1px solid #EEF1F5;
+        font-size: 13px;
+        color: #526174;
+        vertical-align: middle;
+    }
+
+    .document-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .document-table tbody tr:hover {
+        background: #FAFBFD;
+    }
+
+    .document-number {
+        color: #245DB5;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .document-summary {
+        color: #263445;
+        font-weight: 500;
+        min-width: 200px;
+    }
+
+    .document-type,
+    .document-group {
+        white-space: nowrap;
+    }
+
+    .document-group {
+        color: #3173DD;
+        font-weight: 600;
+    }
+
+    .document-empty {
+        text-align: center;
+        color: #8A94A3;
+        padding: 30px 15px !important;
+    }
+
+    .document-note {
+        color: #8A94A3;
+        font-size: 12px;
+        margin-top: 15px;
+    }
+
+    /* BẢNG NHIỆM VỤ ƯU TIÊN */
+    .priority-card {
+        margin-bottom: 30px;
+    }
+
+    .priority-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .priority-table {
+        width: 100%;
+        min-width: 650px;
+        border-collapse: collapse;
+    }
+
+    .priority-table th {
+        background: #F7F9FC;
+        color: #64748B;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: left;
+        padding: 14px 16px;
+        border-bottom: 1px solid #E8EDF3;
+        white-space: nowrap;
+    }
+
+    .priority-table td {
+        padding: 16px;
+        border-bottom: 1px solid #EEF1F5;
+        font-size: 13px;
+        color: #526174;
+        vertical-align: middle;
+    }
+
+    .priority-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .priority-table tbody tr:hover {
+        background: #FAFBFD;
+    }
+
+    .priority-task-name {
+        color: #17365D;
+        font-weight: 600;
+        max-width: 300px;
+    }
+
+    .priority-assignee {
+        color: #526174;
+    }
+
+    .priority-deadline {
+        white-space: nowrap;
+    }
+
+    .priority-deadline.overdue {
+        color: #D64545;
+        font-weight: 700;
+    }
+
+    .priority-status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        color: #A66A00;
+        background: #FFF4D9;
+    }
+
+    .status-processing {
+        color: #245DB5;
+        background: #EAF2FF;
+    }
+
+    .status-overdue {
+        color: #C53030;
+        background: #FDECEC;
+    }
+
+    .status-other {
+        color: #64748B;
+        background: #EEF1F5;
+    }
+
+    .priority-empty {
+        text-align: center;
+        color: #8A94A3;
+        padding: 30px 15px !important;
+        font-size: 13px;
+    }
+
+    .priority-note {
+        color: #8A94A3;
+        font-size: 12px;
+        margin-top: 16px;
+        line-height: 1.5;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .chart-row {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .filter-field.search-field {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .analysis-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-heading h2 {
+            font-size: 21px;
+        }
+
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-field.search-field {
+            grid-column: auto;
+        }
+
+        .filter-actions {
+            justify-content: stretch;
+        }
+
+        .filter-actions a,
+        .filter-actions button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .donut-content {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard">
+
+    <!-- TIÊU ĐỀ DASHBOARD -->
+    <div class="dashboard-heading">
+        <h2>TỔNG QUAN HỆ THỐNG</h2>
+
+        <p>
+            Xin chào, {{ request.user.ho_ten }}!
+            Chào mừng bạn đến với hệ thống quản lý văn bản điều hành.
+        </p>
+    </div>
+
+
+    <!-- BỘ LỌC VÀ TÌM KIẾM VĂN BẢN -->
+    <div class="filter-card">
+
+        <div class="filter-heading">
+            <span>⌕</span>
+            Bộ lọc và tìm kiếm văn bản
+        </div>
+
+        <!-- ĐÃ SỬA: DÙNG REQUEST.PATH THAY CHO TÊN URL -->
+        <form method="GET" action="{{ request.path }}">
+
+            <div class="filter-grid">
+
+                <div class="filter-field search-field">
+                    <label for="search-document">
+                        Tìm kiếm văn bản
+                    </label>
+
+                    <input
+                        type="text"
+                        id="search-document"
+                        name="q"
+                        value="{{ tu_khoa }}"
+                        placeholder="Nhập số ký hiệu hoặc trích yếu văn bản..."
+                    >
+                </div>
+
+                <div class="filter-field">
+                    <label for="from-date">
+                        Từ ngày
+                    </label>
+
+                    <input
+                        type="date"
+                        id="from-date"
+                        name="tu_ngay"
+                        value="{{ tu_ngay }}"
+                    >
+                </div>
+
+                <div class="filter-field">
+                    <label for="to-date">
+                        Đến ngày
+                    </label>
+
+                    <input
+                        type="date"
+                        id="to-date"
+                        name="den_ngay"
+                        value="{{ den_ngay }}"
+                    >
+                </div>
+
+                <div class="filter-field">
+                    <label for="document-type">
+                        Loại văn bản
+                    </label>
+
+                    <select id="document-type" name="loai_van_ban">
+                        <option value="">Tất cả loại văn bản</option>
+
+                        {% for loai in danh_sach_loai_van_ban %}
+                            <option
+                                value="{{ loai.ma_loai }}"
+                                {% if ma_loai_dang_chon == loai.ma_loai %}selected{% endif %}
+                            >
+                                {{ loai.ten_loai }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="filter-field">
+                    <label for="department">
+                        Đơn vị
+                    </label>
+
+                    <select id="department" name="phong_ban">
+                        <option value="">Tất cả đơn vị</option>
+
+                        {% for phong_ban in danh_sach_phong_ban %}
+                            <option
+                                value="{{ phong_ban.ma_phong_ban }}"
+                                {% if ma_phong_ban_dang_chon == phong_ban.ma_phong_ban %}selected{% endif %}
+                            >
+                                {{ phong_ban.ten_phong_ban }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+
+                <!-- ĐÃ SỬA: ĐẶT LẠI VỀ ĐƯỜNG DẪN GỐC -->
+                <a
+                    href="{{ request.path }}"
+                    class="reset-button"
+                >
+                    Đặt lại
+                </a>
+
+                <button type="submit" class="filter-button">
+                    Lọc dữ liệu
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="filter-result">
+            Tìm thấy <strong>{{ tong_van_ban_tim_thay }}</strong> văn bản phù hợp.
+            {% if tong_van_ban_tim_thay > 20 %}
+                Đang hiển thị 20 văn bản mới nhất.
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <!-- 4 THẺ THỐNG KÊ -->
+    <h3 class="section-title">
+        Tình hình xử lý nhiệm vụ
+    </h3>
+
+    <div class="stats-grid">
+
+        <div class="stat-card pending">
+            <div class="stat-label">Nhiệm vụ chờ xử lý</div>
+            <div class="stat-number">{{ tong_cho_xu_ly }}</div>
+            <div class="stat-note">
+                Tổng số nhiệm vụ đang chờ tiếp nhận
+            </div>
+        </div>
+
+        <div class="stat-card processing">
+            <div class="stat-label">Nhiệm vụ đang xử lý</div>
+            <div class="stat-number">{{ tong_dang_xu_ly }}</div>
+            <div class="stat-note">
+                Tổng số nhiệm vụ đang được thực hiện
+            </div>
+        </div>
+
+        <div class="stat-card overdue">
+            <div class="stat-label">Nhiệm vụ quá hạn</div>
+            <div class="stat-number">{{ tong_qua_han }}</div>
+            <div class="stat-note">
+                Nhiệm vụ đã quá thời hạn và chưa hoàn thành
+            </div>
+        </div>
+
+        <div class="stat-card completed">
+            <div class="stat-label">Nhiệm vụ hoàn thành</div>
+            <div class="stat-number">{{ tong_hoan_thanh }}</div>
+            <div class="stat-note">
+                Tổng số nhiệm vụ đã hoàn thành
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- KHU VỰC PHÂN TÍCH -->
+    <h3 class="section-title">
+        Phân tích và thống kê
+    </h3>
+
+    <div class="analysis-grid">
+
+        <!-- BIỂU ĐỒ DONUT -->
+        <div class="analysis-card">
+
+            <h4 class="section-title">
+                Trạng thái nhiệm vụ
+            </h4>
+
+            <p class="analysis-description">
+                Tỷ trọng nhiệm vụ theo trạng thái hiện tại trong hệ thống.
+            </p>
+
+            <div class="donut-content">
+
+                {% if tong_nhiem_vu > 0 %}
+
+                    <div class="donut-chart"
+                         style="background: conic-gradient(
+                            #F5A623 0% {{ goc_cho_xu_ly }}%,
+                            #3173DD {{ goc_cho_xu_ly }}% {{ goc_dang_xu_ly }}%,
+                            #20A779 {{ goc_dang_xu_ly }}% {{ goc_hoan_thanh }}%,
+                            #8A94A3 {{ goc_hoan_thanh }}% 100%
+                         );">
+
+                        <div class="donut-center">
+                            <span class="donut-total">
+                                {{ tong_nhiem_vu }}
+                            </span>
+
+                            <span class="donut-label">
+                                Tổng nhiệm vụ
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="donut-chart">
+                        <div class="donut-center">
+                            <span class="donut-total">0</span>
+                            <span class="donut-label">Tổng nhiệm vụ</span>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                <div class="donut-legend">
+
+                    <div class="legend-item">
+                        <div class="legend-name">
+                            <span class="legend-dot legend-pending"></span>
+                            Chờ xử lý
+                        </div>
+
+                        <div class="legend-value">
+                            <strong>{{ tong_cho_xu_ly }}</strong>
+                            <span>{{ ty_le_cho_xu_ly }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="legend-item">
+                        <div class="legend-name">
+                            <span class="legend-dot legend-processing"></span>
+                            Đang xử lý
+                        </div>
+
+                        <div class="legend-value">
+                            <strong>{{ tong_dang_xu_ly }}</strong>
+                            <span>{{ ty_le_dang_xu_ly }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="legend-item">
+                        <div class="legend-name">
+                            <span class="legend-dot legend-completed"></span>
+                            Hoàn thành
+                        </div>
+
+                        <div class="legend-value">
+                            <strong>{{ tong_hoan_thanh }}</strong>
+                            <span>{{ ty_le_hoan_thanh }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="legend-item">
+                        <div class="legend-name">
+                            <span class="legend-dot legend-other"></span>
+                            Trạng thái khác
+                        </div>
+
+                        <div class="legend-value">
+                            <strong>{{ tong_khac }}</strong>
+                            <span>{{ ty_le_khac }}%</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if tong_nhiem_vu == 0 %}
+                <p class="chart-empty">
+                    Chưa có dữ liệu nhiệm vụ để thống kê.
+                </p>
+            {% endif %}
+
+            <p class="analysis-description" style="margin-top: 15px; margin-bottom: 0;">
+                Lưu ý: Nhiệm vụ quá hạn được thống kê riêng tại thẻ tổng quan
+                vì có thể đồng thời thuộc trạng thái chờ xử lý hoặc đang xử lý.
+            </p>
+
+        </div>
+
+
+        <!-- QUY MÔ DỮ LIỆU -->
+        <div class="analysis-card">
+
+            <h4 class="section-title">
+                Quy mô dữ liệu hệ thống
+            </h4>
+
+            <p class="analysis-description">
+                Tổng hợp các danh mục đang được quản lý trong hệ thống.
+            </p>
+
+            <div class="summary-list">
+
+                <div class="summary-item">
+                    <span>Tài khoản người dùng</span>
+                    <strong>{{ tong_nguoi_dung }}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Vai trò hệ thống</span>
+                    <strong>{{ tong_vai_tro }}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Phòng ban</span>
+                    <strong>{{ tong_phong_ban }}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Loại văn bản</span>
+                    <strong>{{ tong_loai_van_ban }}</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- HAI BIỂU ĐỒ CÙNG MỘT HÀNG -->
+    <div class="chart-row">
+
+        <!-- BIỂU ĐỒ ĐƯỜNG -->
+        <div class="analysis-card line-chart-card">
+
+            <h4 class="section-title">
+                Biến động số lượng nhiệm vụ theo thời gian
+            </h4>
+
+            <p class="analysis-description">
+                Thống kê số nhiệm vụ được giao trong 5 tháng gần nhất,
+                dựa trên ngày giao nhiệm vụ.
+            </p>
+
+            {% if cac_diem %}
+
+                <div class="line-chart-container">
+
+                    <svg class="line-chart"
+                         viewBox="0 0 600 230"
+                         preserveAspectRatio="xMidYMid meet"
+                         xmlns="http://www.w3.org/2000/svg">
+
+                        <line class="chart-grid-line"
+                              x1="40" y1="40" x2="560" y2="40"/>
+
+                        <line class="chart-grid-line"
+                              x1="40" y1="110" x2="560" y2="110"/>
+
+                        <line class="chart-grid-line"
+                              x1="40" y1="180" x2="560" y2="180"/>
+
+                        <line class="chart-axis"
+                              x1="40" y1="25" x2="40" y2="180"/>
+
+                        <line class="chart-axis"
+                              x1="40" y1="180" x2="560" y2="180"/>
+
+                        <polyline class="chart-line"
+                                  points="{{ duong_bieu_do }}"/>
+
+                        {% for diem in cac_diem %}
+
+                            <circle class="chart-point"
+                                    cx="{{ diem.x }}"
+                                    cy="{{ diem.y }}"
+                                    r="5"/>
+
+                            <text class="chart-point-label"
+                                  x="{{ diem.x }}"
+                                  y="{{ diem.y|add:'-12' }}">
+                                {{ diem.so_luong }}
+                            </text>
+
+                            <text class="chart-month-label"
+                                  x="{{ diem.x }}"
+                                  y="205">
+                                {{ diem.nhan }}
+                            </text>
+
+                        {% endfor %}
+
+                    </svg>
+
+                </div>
+
+                <div class="chart-legend">
+                    <span class="chart-legend-line"></span>
+                    Số nhiệm vụ được giao
+                </div>
+
+            {% else %}
+
+                <p class="chart-empty">
+                    Chưa có dữ liệu nhiệm vụ theo thời gian.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- BIỂU ĐỒ CỘT -->
+        <div class="analysis-card bar-chart-card">
+
+            <h4 class="section-title">
+                Số lượng văn bản theo nhóm
+            </h4>
+
+            <p class="analysis-description">
+                Thống kê số lượng văn bản đến, văn bản đi đã ban hành
+                và văn bản dự thảo theo điều kiện lọc hiện tại.
+            </p>
+
+            <div class="bar-chart-list">
+
+                {% for item in du_lieu_nhom_van_ban %}
+
+                    <div class="bar-chart-item">
+
+                        <div class="bar-chart-label">
+                            {{ item.nhan }}
+                        </div>
+
+                        <div class="bar-chart-track">
+                            <div class="bar-chart-fill
+                                {% if forloop.counter == 1 %}incoming
+                                {% elif forloop.counter == 2 %}outgoing
+                                {% else %}draft{% endif %}"
+                                 style="width: {{ item.ty_le }}%;">
+                            </div>
+                        </div>
+
+                        <div class="bar-chart-value">
+                            {{ item.so_luong }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <p class="bar-chart-note">
+                Văn bản dự thảo là văn bản đi chưa có ngày ban hành.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- DANH SÁCH VĂN BẢN -->
+    <div class="analysis-card document-card">
+
+        <h4 class="section-title">
+            Danh sách văn bản
+        </h4>
+
+        <p class="analysis-description">
+            Kết quả tìm kiếm văn bản theo các điều kiện lọc phía trên.
+        </p>
+
+        <div class="document-table-wrapper">
+
+            <table class="document-table">
+
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Số ký hiệu</th>
+                        <th>Trích yếu</th>
+                        <th>Nhóm văn bản</th>
+                        <th>Loại văn bản</th>
+                        <th>Ngày văn bản</th>
+                        <th>Đơn vị</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for van_ban in danh_sach_van_ban %}
+
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <td>
+                                <span class="document-number">
+                                    {{ van_ban.so_ky_hieu }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="document-summary">
+                                    {{ van_ban.trich_yeu }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="document-group">
+                                    {{ van_ban.nhom }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="document-type">
+                                    {{ van_ban.loai }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if van_ban.ngay %}
+                                    {{ van_ban.ngay|date:"d/m/Y" }}
+                                {% else %}
+                                    Chưa ban hành
+                                {% endif %}
+                            </td>
+
+                            <td>{{ van_ban.don_vi }}</td>
+
+                            <td>{{ van_ban.trang_thai }}</td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="8" class="document-empty">
+                                Không tìm thấy văn bản phù hợp với điều kiện lọc.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p class="document-note">
+            Tổng số văn bản phù hợp: {{ tong_van_ban_tim_thay }}.
+            {% if tong_van_ban_tim_thay > 20 %}
+                Bảng chỉ hiển thị 20 văn bản mới nhất.
+            {% endif %}
+        </p>
+
+    </div>
+
+
+    <!-- BẢNG NHIỆM VỤ ƯU TIÊN -->
+    <div class="analysis-card priority-card">
+
+        <h4 class="section-title">
+            Nhiệm vụ ưu tiên
+        </h4>
+
+        <p class="analysis-description">
+            Danh sách tối đa 5 nhiệm vụ chưa hoàn thành,
+            được sắp xếp theo thời hạn xử lý gần nhất.
+        </p>
+
+        <div class="priority-table-wrapper">
+
+            <table class="priority-table">
+
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên nhiệm vụ</th>
+                        <th>Người nhận</th>
+                        <th>Hạn xử lý</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for nhiem_vu in danh_sach_nhiem_vu_uu_tien %}
+
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <td>
+                                <div class="priority-task-name">
+                                    {{ nhiem_vu.tieu_de }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="priority-assignee">
+                                    {% if nhiem_vu.nguoi_nhan %}
+                                        {{ nhiem_vu.nguoi_nhan.ho_ten }}
+                                    {% else %}
+                                        Chưa phân công
+                                    {% endif %}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="priority-deadline
+                                    {% if nhiem_vu.da_qua_han %}overdue{% endif %}">
+                                    {{ nhiem_vu.han_xu_ly|date:"d/m/Y H:i" }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                {% if nhiem_vu.da_qua_han %}
+
+                                    <span class="priority-status status-overdue">
+                                        Quá hạn
+                                    </span>
+
+                                {% elif nhiem_vu.trang_thai_nhiem_vu == 'Chờ xử lý' %}
+
+                                    <span class="priority-status status-pending">
+                                        Chờ xử lý
+                                    </span>
+
+                                {% elif nhiem_vu.trang_thai_nhiem_vu == 'Đang xử lý' %}
+
+                                    <span class="priority-status status-processing">
+                                        Đang xử lý
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="priority-status status-other">
+                                        {{ nhiem_vu.trang_thai_nhiem_vu }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="5" class="priority-empty">
+                                Hiện chưa có nhiệm vụ cần ưu tiên xử lý.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p class="priority-note">
+            Nhiệm vụ được đánh dấu quá hạn khi thời hạn xử lý đã qua
+            và nhiệm vụ chưa hoàn thành.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

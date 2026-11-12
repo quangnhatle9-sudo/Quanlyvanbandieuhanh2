@@ -1,0 +1,196 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Thêm phòng ban{% endblock %}
+
+{% block extra_css %}
+<style>
+    .department-form-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.25);
+        z-index: 100;
+    }
+
+    .department-form-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 101;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .department-form-header {
+        padding: 25px 28px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .department-form-header h3 {
+        font-size: 21px;
+        font-weight: 700;
+        color: #17365d;
+        margin-bottom: 6px;
+    }
+
+    .department-form-header p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .department-form-body {
+        padding: 25px 28px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .department-form-body label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .department-form-body input,
+    .department-form-body select,
+    .department-form-body textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .department-form-body input:focus,
+    .department-form-body select:focus,
+    .department-form-body textarea:focus {
+        border-color: #1769aa;
+        box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
+    }
+
+    .department-form-footer {
+        padding: 18px 28px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .department-form-footer .btn-save {
+        background: #1769aa;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .department-form-footer .btn-save:hover {
+        background: #10578f;
+        color: #fff;
+    }
+
+    .department-form-footer .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        padding: 10px 20px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .department-form-footer .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    @media (max-width: 768px) {
+        .department-form-overlay {
+            left: 0;
+        }
+
+        .department-form-panel {
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="department-form-overlay"></div>
+
+<div class="department-form-panel">
+
+    <div class="department-form-header">
+        <h3>Thêm phòng ban</h3>
+        <p>Nhập thông tin phòng ban hoặc đơn vị mới vào hệ thống.</p>
+    </div>
+
+    <form method="POST" id="department-create-form"
+          style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+
+        {% csrf_token %}
+
+        <div class="department-form-body">
+
+            {% for field in form %}
+                <div class="mb-4">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="text-muted small mt-1">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="department-form-footer">
+
+            <a href="{% url 'dashboard:department_list' %}"
+               class="btn-cancel">
+                Hủy
+            </a>
+
+            <button type="submit" form="department-create-form"
+                    class="btn-save">
+                Lưu phòng ban
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

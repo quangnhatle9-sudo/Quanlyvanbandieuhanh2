@@ -1,0 +1,394 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Quản lý phòng ban{% endblock %}
+
+{% block extra_css %}
+<style>
+    .department-page {
+        padding: 12px 8px;
+    }
+
+    .department-breadcrumb {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 18px;
+    }
+
+    .department-breadcrumb span {
+        color: #1769aa;
+        font-weight: 600;
+    }
+
+    .department-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .department-header h2 {
+        font-size: 25px;
+        font-weight: 700;
+        color: #17365d;
+        margin-bottom: 7px;
+    }
+
+    .department-header p {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* NÚT QUAY LẠI */
+    .department-back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 16px;
+        background: #fff;
+        color: #1769aa;
+        border: 1px solid #1769aa;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .department-back-btn:hover {
+        background: #eef6fc;
+        color: #10578f;
+    }
+
+    .department-add-btn {
+        background: #1769aa;
+        color: white;
+        border: none;
+        padding: 10px 17px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .department-add-btn:hover {
+        background: #10578f;
+        color: white;
+    }
+
+    .department-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+    }
+
+    .department-toolbar {
+        padding: 18px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .department-toolbar h5 {
+        color: #334155;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .department-search {
+        width: 310px;
+        max-width: 100%;
+        position: relative;
+    }
+
+    .department-search input {
+        width: 100%;
+        padding: 9px 13px 9px 36px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .department-search input:focus {
+        border-color: #1769aa;
+        box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.1);
+    }
+
+    .department-search-icon {
+        position: absolute;
+        left: 12px;
+        top: 8px;
+        color: #94a3b8;
+        font-size: 16px;
+    }
+
+    .department-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .department-table thead {
+        background: #f8fafc;
+    }
+
+    .department-table th {
+        padding: 14px 15px;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    .department-table td {
+        padding: 15px;
+        font-size: 13px;
+        color: #475569;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .department-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .department-code {
+        color: #1769aa;
+        font-weight: 600;
+    }
+
+    .department-name {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .department-type {
+        display: inline-block;
+        padding: 5px 9px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-radius: 5px;
+        font-size: 12px;
+    }
+
+    .department-edit-btn {
+        display: inline-block;
+        padding: 6px 11px;
+        border: 1px solid #bfdbfe;
+        border-radius: 6px;
+        color: #1769aa;
+        background: #eff6ff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .department-edit-btn:hover {
+        background: #dbeafe;
+        color: #10578f;
+    }
+
+    .department-empty {
+        text-align: center;
+        padding: 35px 15px !important;
+        color: #94a3b8 !important;
+    }
+
+    .department-footer {
+        padding: 13px 20px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .department-header {
+            align-items: flex-start;
+        }
+
+        .department-toolbar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .department-search {
+            width: 100%;
+        }
+
+        .department-table {
+            min-width: 850px;
+        }
+
+        .department-header h2 {
+            font-size: 21px;
+        }
+
+        .department-back-btn {
+            padding: 8px 11px;
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="department-page">
+
+    <!-- ĐƯỜNG DẪN -->
+    <div class="department-breadcrumb">
+        Quản trị hệ thống / Danh mục dùng chung /
+        <span>Quản lý phòng ban</span>
+    </div>
+
+    <!-- TIÊU ĐỀ VÀ NÚT QUAY LẠI -->
+    <div class="department-header">
+
+        <div>
+            <h2>Quản lý phòng ban</h2>
+            <p>Quản lý danh sách phòng ban và đơn vị trong hệ thống.</p>
+        </div>
+
+        <a href="{% url 'dashboard:system_management_home' %}"
+           class="department-back-btn">
+            ← Quay lại
+        </a>
+
+    </div>
+
+    <div class="department-card">
+
+        <div class="department-toolbar">
+            <h5>Danh sách phòng ban</h5>
+
+            <div class="department-search">
+                <span class="department-search-icon">⌕</span>
+                <input type="text"
+                       id="departmentSearch"
+                       placeholder="Tìm mã, tên phòng ban, trưởng bộ phận...">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="department-table">
+
+                <thead>
+                    <tr>
+                        <th class="text-center">STT</th>
+                        <th>Mã phòng ban</th>
+                        <th>Tên phòng ban</th>
+                        <th>Loại đơn vị</th>
+                        <th>Trưởng bộ phận</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody id="departmentTableBody">
+
+                    {% for phong_ban in danh_sach_phong_ban %}
+                    <tr class="department-row">
+
+                        <td class="text-center">
+                            {{ forloop.counter }}
+                        </td>
+
+                        <td>
+                            <span class="department-code">
+                                {{ phong_ban.ma_phong_ban }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="department-name">
+                                {{ phong_ban.ten_phong_ban }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="department-type">
+                                {{ phong_ban.loai_don_vi }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if phong_ban.ma_truong_bo_phan %}
+                                {{ phong_ban.ma_truong_bo_phan.ho_ten }}
+                            {% else %}
+                                <span class="text-muted">Chưa phân công</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            <a href="{% url 'dashboard:department_update' phong_ban.ma_phong_ban %}"
+                               class="department-edit-btn">
+                                Chỉnh sửa
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="department-empty">
+                            Chưa có phòng ban nào trong hệ thống.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="department-footer">
+            Tổng số:
+            <strong id="departmentCount">{{ danh_sach_phong_ban|length }}</strong>
+            phòng ban
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    const departmentSearch = document.getElementById('departmentSearch');
+    const departmentRows = document.querySelectorAll('.department-row');
+    const departmentCount = document.getElementById('departmentCount');
+
+    departmentSearch.addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        departmentRows.forEach(function (row) {
+            const rowText = row.innerText.toLowerCase();
+            const matched = rowText.includes(keyword);
+
+            row.style.display = matched ? '' : 'none';
+
+            if (matched) {
+                visibleCount++;
+            }
+        });
+
+        departmentCount.textContent = visibleCount;
+    });
+</script>
+{% endblock %}

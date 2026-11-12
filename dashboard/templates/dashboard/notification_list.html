@@ -1,0 +1,808 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Thông báo & cảnh báo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .notification-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .notification-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 16px;
+        color: #7b8794;
+        font-size: 13px;
+    }
+
+    .notification-breadcrumb a {
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .notification-title {
+        margin: 0 0 7px;
+        font-size: 25px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .notification-subtitle {
+        margin: 0;
+        color: #7b8794;
+        font-size: 14px;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 10px 16px;
+        border: 1px solid #dbe2ea;
+        border-radius: 8px;
+        background: #fff;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .btn-back:hover {
+        border-color: #2563eb;
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .notification-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .notification-stat-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 21px;
+        background: #fff;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .035);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 22px;
+    }
+
+    .stat-icon.red {
+        color: #dc2626;
+        background: #fee2e2;
+    }
+
+    .stat-icon.orange {
+        color: #d97706;
+        background: #fef3c7;
+    }
+
+    .stat-icon.blue {
+        color: #2563eb;
+        background: #dbeafe;
+    }
+
+    .stat-label {
+        margin-bottom: 5px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .stat-number {
+        color: #1e293b;
+        font-size: 25px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .notification-filter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 17px 22px;
+        margin-bottom: 18px;
+        background: #fff;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .035);
+    }
+
+    .notification-filter-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .notification-filter-label span {
+        color: #2563eb;
+        font-size: 18px;
+    }
+
+    .notification-filter-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .notification-role-select {
+        min-width: 230px;
+        padding: 10px 35px 10px 12px;
+        border: 1px solid #dbe2ea;
+        border-radius: 7px;
+        background: #fff;
+        color: #334155;
+        font-size: 13px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .notification-role-select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+    }
+
+    .btn-filter {
+        padding: 10px 16px;
+        border: 1px solid #2563eb;
+        border-radius: 7px;
+        background: #2563eb;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .btn-filter:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-reset-filter {
+        padding: 10px 13px;
+        border: 1px solid #dbe2ea;
+        border-radius: 7px;
+        background: #fff;
+        color: #64748b;
+        font-size: 13px;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+    .btn-reset-filter:hover {
+        background: #f8fafc;
+        color: #334155;
+    }
+
+    .notification-panel {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .035);
+    }
+
+    .notification-list-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 22px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .notification-list-heading h2 {
+        margin: 0;
+        color: #1e293b;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .btn-view-all {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 14px;
+        border: 1px solid #2563eb;
+        border-radius: 7px;
+        background: #fff;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .btn-view-all:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .notification-tabs {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding: 0 22px;
+        border-bottom: 1px solid #edf0f4;
+        overflow-x: auto;
+    }
+
+    .notification-tab {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 18px 0;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .notification-tab:hover {
+        color: #2563eb;
+    }
+
+    .notification-tab.active {
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+    .notification-tab.active::after {
+        position: absolute;
+        right: 0;
+        bottom: -1px;
+        left: 0;
+        height: 3px;
+        background: #2563eb;
+        border-radius: 3px 3px 0 0;
+        content: "";
+    }
+
+    .notification-tab-count {
+        min-width: 21px;
+        padding: 2px 6px;
+        border-radius: 20px;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    .notification-list {
+        padding: 0 22px;
+    }
+
+    .notification-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-dot {
+        width: 9px;
+        height: 9px;
+        flex-shrink: 0;
+        margin-top: 6px;
+        border-radius: 50%;
+    }
+
+    .notification-dot.red {
+        background: #dc2626;
+    }
+
+    .notification-dot.orange {
+        background: #d97706;
+    }
+
+    .notification-dot.blue {
+        background: #2563eb;
+    }
+
+    .notification-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notification-item-title {
+        margin: 0 0 7px;
+        color: #263445;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .notification-item.unread .notification-item-title {
+        color: #1e293b;
+    }
+
+    .notification-description {
+        margin: 0 0 9px;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .notification-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .notification-type {
+        font-weight: 600;
+    }
+
+    .notification-type.red {
+        color: #dc2626;
+    }
+
+    .notification-type.orange {
+        color: #d97706;
+    }
+
+    .notification-type.blue {
+        color: #2563eb;
+    }
+
+    .notification-action {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 12px;
+        flex-shrink: 0;
+        padding-top: 2px;
+    }
+
+    .notification-action a {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .notification-action a:hover {
+        text-decoration: underline;
+    }
+
+    .btn-mark-read {
+        padding: 8px 11px;
+        border: 1px solid #dbeafe;
+        border-radius: 7px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .btn-mark-read:hover {
+        border-color: #2563eb;
+        background: #dbeafe;
+    }
+
+    .notification-empty {
+        padding: 55px 20px;
+        color: #94a3b8;
+        text-align: center;
+    }
+
+    .notification-empty-icon {
+        margin-bottom: 12px;
+        font-size: 35px;
+    }
+
+    .notification-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 15px;
+        border-top: 1px solid #f0f2f5;
+    }
+
+    .notification-pagination a,
+    .notification-pagination span {
+        min-width: 32px;
+        padding: 7px 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        color: #475569;
+        text-align: center;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .notification-pagination .current {
+        border-color: #2563eb;
+        background: #2563eb;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .notification-header {
+            align-items: flex-start;
+        }
+
+        .notification-stats {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .notification-tabs {
+            gap: 20px;
+        }
+
+        .notification-list {
+            padding: 0 15px;
+        }
+
+        .notification-filter {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .notification-filter-form {
+            width: 100%;
+        }
+
+        .notification-role-select {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-action {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .notification-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .notification-header-main {
+            width: 100%;
+        }
+
+        .btn-back {
+            align-self: flex-start;
+        }
+
+        .notification-item {
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .notification-action {
+            align-self: flex-end;
+            margin-left: 23px;
+        }
+
+        .notification-content {
+            flex-basis: calc(100% - 25px);
+        }
+
+        .notification-filter-form {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .notification-role-select {
+            width: 100%;
+        }
+
+        .notification-list-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notification-page">
+
+    <div class="notification-breadcrumb">
+        <a href="{% url 'dashboard:system_management_home' %}">
+            Quản trị hệ thống
+        </a>
+        <span>/</span>
+        <span>Thông báo & cảnh báo</span>
+    </div>
+
+    <div class="notification-header">
+        <div class="notification-header-main">
+            <h1 class="notification-title">Thông báo & cảnh báo</h1>
+            <p class="notification-subtitle">
+                Cập nhật thông tin và nhắc việc từ hệ thống
+            </p>
+        </div>
+
+        <a href="{% url 'dashboard:system_management_home' %}" class="btn-back">
+            <span>←</span>
+            Quay lại
+        </a>
+    </div>
+
+    <div class="notification-stats">
+
+        <div class="notification-stat-card">
+            <div class="stat-icon red">!</div>
+            <div>
+                <div class="stat-label">Văn bản quá hạn</div>
+                <div class="stat-number">{{ tong_qua_han }}</div>
+            </div>
+        </div>
+
+        <div class="notification-stat-card">
+            <div class="stat-icon orange">◷</div>
+            <div>
+                <div class="stat-label">Sắp đến hạn</div>
+                <div class="stat-number">{{ tong_sap_den_han }}</div>
+            </div>
+        </div>
+
+        <div class="notification-stat-card">
+            <div class="stat-icon blue">♧</div>
+            <div>
+                <div class="stat-label">Thông báo hệ thống</div>
+                <div class="stat-number">{{ tong_he_thong }}</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="notification-filter">
+
+        <div class="notification-filter-label">
+            <span>☷</span>
+            Lọc thông báo theo vai trò
+        </div>
+
+        <form method="GET"
+              action="{% url 'dashboard:notification_list' %}"
+              class="notification-filter-form">
+
+            <select name="vai_tro" class="notification-role-select">
+                <option value="">Tất cả vai trò</option>
+
+                {% for vai_tro in danh_sach_vai_tro %}
+                    <option value="{{ vai_tro.ma_vai_tro }}"
+                        {% if vai_tro_dang_chon == vai_tro.ma_vai_tro %}selected{% endif %}>
+                        {{ vai_tro.ten_vai_tro }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn-filter">
+                Áp dụng
+            </button>
+
+            <a href="{% url 'dashboard:notification_list' %}"
+               class="btn-reset-filter">
+                Đặt lại
+            </a>
+
+        </form>
+
+    </div>
+
+    <div class="notification-panel">
+
+        <div class="notification-list-heading">
+            <h2>Danh sách thông báo</h2>
+
+            {% if tab_dang_chon != 'all' %}
+                <a href="?tab=all&vai_tro={{ vai_tro_dang_chon|urlencode }}"
+                   class="btn-view-all">
+                    Xem tất cả →
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="notification-tabs">
+
+            <a href="?tab=all&vai_tro={{ vai_tro_dang_chon|urlencode }}"
+               class="notification-tab {% if tab_dang_chon == 'all' %}active{% endif %}">
+                Tất cả
+            </a>
+
+            <a href="?tab=QUA_HAN&vai_tro={{ vai_tro_dang_chon|urlencode }}"
+               class="notification-tab {% if tab_dang_chon == 'QUA_HAN' %}active{% endif %}">
+                Quá hạn
+                <span class="notification-tab-count">{{ tong_qua_han }}</span>
+            </a>
+
+            <a href="?tab=SAP_DEN_HAN&vai_tro={{ vai_tro_dang_chon|urlencode }}"
+               class="notification-tab {% if tab_dang_chon == 'SAP_DEN_HAN' %}active{% endif %}">
+                Sắp đến hạn
+                <span class="notification-tab-count">{{ tong_sap_den_han }}</span>
+            </a>
+
+            <a href="?tab=HE_THONG&vai_tro={{ vai_tro_dang_chon|urlencode }}"
+               class="notification-tab {% if tab_dang_chon == 'HE_THONG' %}active{% endif %}">
+                Thông báo hệ thống
+                <span class="notification-tab-count">{{ tong_he_thong }}</span>
+            </a>
+
+        </div>
+
+        <div class="notification-list">
+
+            {% for item in danh_sach_thong_bao %}
+
+                <div class="notification-item {% if not item.da_doc %}unread{% endif %}">
+
+                    <span class="notification-dot
+                        {% if item.loai_thong_bao == 'QUA_HAN' %}
+                            red
+                        {% elif item.loai_thong_bao == 'SAP_DEN_HAN' %}
+                            orange
+                        {% else %}
+                            blue
+                        {% endif %}">
+                    </span>
+
+                    <div class="notification-content">
+
+                        <h3 class="notification-item-title">
+                            {{ item.tieu_de }}
+                        </h3>
+
+                        <p class="notification-description">
+                            {{ item.noi_dung }}
+                        </p>
+
+                        <div class="notification-meta">
+
+                            <span class="notification-type
+                                {% if item.loai_thong_bao == 'QUA_HAN' %}
+                                    red
+                                {% elif item.loai_thong_bao == 'SAP_DEN_HAN' %}
+                                    orange
+                                {% else %}
+                                    blue
+                                {% endif %}">
+                                {% if item.loai_thong_bao == 'QUA_HAN' %}
+                                    Văn bản quá hạn
+                                {% elif item.loai_thong_bao == 'SAP_DEN_HAN' %}
+                                    Sắp đến hạn
+                                {% else %}
+                                    Thông báo hệ thống
+                                {% endif %}
+                            </span>
+
+                            <span>
+                                {{ item.ngay_hien_thi|date:"d/m/Y H:i" }}
+                            </span>
+
+                            {% if not item.da_doc %}
+                                <span>Chưa đọc</span>
+                            {% else %}
+                                <span>Đã đọc</span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="notification-action">
+
+                        <a href="{% url 'dashboard:notification_detail' item.ma_thong_bao %}?vai_tro={{ vai_tro_dang_chon|urlencode }}">
+                            Xem chi tiết →
+                        </a>
+
+                        {% if not item.da_doc %}
+                            <form method="POST"
+                                  action="{% url 'dashboard:notification_mark_read' item.ma_thong_bao %}">
+                                {% csrf_token %}
+
+                                <input type="hidden"
+                                       name="tab"
+                                       value="{{ tab_dang_chon }}">
+
+                                <input type="hidden"
+                                       name="vai_tro"
+                                       value="{{ vai_tro_dang_chon }}">
+
+                                <button type="submit" class="btn-mark-read">
+                                    ✓ Đánh dấu đã đọc
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="notification-empty">
+                    <div class="notification-empty-icon">♧</div>
+                    <div>Hiện chưa có thông báo nào.</div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% if page_obj.has_other_pages %}
+            <div class="notification-pagination">
+
+                {% if page_obj.has_previous %}
+                    <a href="?tab={{ tab_dang_chon }}&vai_tro={{ vai_tro_dang_chon|urlencode }}&page={{ page_obj.previous_page_number }}">
+                        Trước
+                    </a>
+                {% endif %}
+
+                <span class="current">
+                    {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?tab={{ tab_dang_chon }}&vai_tro={{ vai_tro_dang_chon|urlencode }}&page={{ page_obj.next_page_number }}">
+                        Tiếp
+                    </a>
+                {% endif %}
+
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

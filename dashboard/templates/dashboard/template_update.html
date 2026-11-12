@@ -1,0 +1,481 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chỉnh sửa mẫu văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-form-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .template-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 18px;
+        color: #8491a2;
+        font-size: 13px;
+    }
+
+    .template-breadcrumb a {
+        color: #2864a8;
+        text-decoration: none;
+    }
+
+    .template-breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .template-heading {
+        margin-bottom: 25px;
+    }
+
+    .template-heading h2 {
+        margin: 0 0 8px;
+        color: #17365D;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .template-heading p {
+        margin: 0;
+        color: #718096;
+        font-size: 14px;
+    }
+
+    .template-form-card {
+        max-width: 950px;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(24, 48, 80, 0.04);
+    }
+
+    .form-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .form-card-header h3 {
+        margin: 0 0 6px;
+        color: #263445;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .form-card-header p {
+        margin: 0;
+        color: #8491a2;
+        font-size: 13px;
+    }
+
+    .template-form {
+        padding: 25px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        color: #35465c;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .required-mark {
+        color: #dc3545;
+    }
+
+    .template-form input:not([type="checkbox"]),
+    .template-form select,
+    .template-form textarea {
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 13px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        outline: none;
+        background: #fff;
+        color: #263445;
+        font-family: inherit;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .template-form textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .template-form input:focus,
+    .template-form select:focus,
+    .template-form textarea:focus {
+        border-color: #5b9bd5;
+        box-shadow: 0 0 0 3px rgba(40, 100, 168, 0.1);
+    }
+
+    .template-form input[type="file"] {
+        padding: 7px;
+        background: #f8fafc;
+    }
+
+    .field-help {
+        color: #8491a2;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .current-file {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+        padding: 12px 14px;
+        border: 1px solid #dce9f8;
+        border-radius: 7px;
+        background: #f4f8fd;
+    }
+
+    .current-file-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        background: #e2efff;
+        color: #2864a8;
+        font-size: 17px;
+    }
+
+    .current-file-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .current-file-info strong {
+        display: block;
+        overflow: hidden;
+        color: #35465c;
+        font-size: 12px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .current-file-info span {
+        display: block;
+        margin-top: 4px;
+        color: #8491a2;
+        font-size: 11px;
+    }
+
+    .current-file a {
+        color: #2864a8;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .current-file a:hover {
+        text-decoration: underline;
+    }
+
+    .form-error {
+        color: #dc3545;
+        font-size: 12px;
+    }
+
+    .non-field-errors {
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        border: 1px solid #f5c2c7;
+        border-radius: 7px;
+        background: #f8d7da;
+        color: #842029;
+        font-size: 13px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f4;
+    }
+
+    .btn-form {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        height: 42px;
+        padding: 0 18px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-cancel {
+        border-color: #dce2e9;
+        background: #fff;
+        color: #526174;
+    }
+
+    .btn-cancel:hover {
+        background: #f0f2f5;
+        border-color: #cbd3dd;
+        color: #263445;
+    }
+
+    .btn-save {
+        border-color: #2864a8;
+        background: #2864a8;
+        color: #fff;
+    }
+
+    .btn-save:hover {
+        border-color: #174477;
+        background: #174477;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .template-form {
+            padding: 18px;
+        }
+
+        .form-card-header {
+            padding: 18px;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-form {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="template-form-page">
+
+    <!-- ĐIỀU HƯỚNG -->
+    <div class="template-breadcrumb">
+        <a href="{% url 'dashboard:system_management_home' %}">
+            Quản trị hệ thống
+        </a>
+        <span>›</span>
+        <a href="{% url 'dashboard:template_list' %}">
+            Kho mẫu văn bản
+        </a>
+        <span>›</span>
+        <span>Chỉnh sửa mẫu văn bản</span>
+    </div>
+
+    <!-- TIÊU ĐỀ -->
+    <div class="template-heading">
+        <h2>Chỉnh sửa mẫu văn bản</h2>
+        <p>
+            Cập nhật thông tin và file đính kèm của mẫu văn bản trong hệ thống.
+        </p>
+    </div>
+
+    <!-- FORM CHỈNH SỬA -->
+    <div class="template-form-card">
+
+        <div class="form-card-header">
+            <h3>Thông tin mẫu văn bản</h3>
+            <p>
+                Mây có thể điều chỉnh các thông tin bên dưới và lưu lại thay đổi.
+            </p>
+        </div>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="template-form"
+        >
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-grid">
+
+                <!-- MÃ MẪU -->
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.ma_mau.id_for_label }}">
+                        Mã mẫu văn bản <span class="required-mark">*</span>
+                    </label>
+
+                    {{ form.ma_mau }}
+
+                    {% for error in form.ma_mau.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- TÊN MẪU -->
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.ten_mau.id_for_label }}">
+                        Tên mẫu văn bản <span class="required-mark">*</span>
+                    </label>
+
+                    {{ form.ten_mau }}
+
+                    {% for error in form.ten_mau.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- LOẠI VĂN BẢN -->
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.ma_loai.id_for_label }}">
+                        Loại văn bản <span class="required-mark">*</span>
+                    </label>
+
+                    {{ form.ma_loai }}
+
+                    {% for error in form.ma_loai.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- CĂN CỨ PHÁP LÝ -->
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.can_cu.id_for_label }}">
+                        Căn cứ pháp lý
+                    </label>
+
+                    {{ form.can_cu }}
+
+                    {% for error in form.can_cu.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- FILE MẪU -->
+                <div class="form-group full-width">
+                    <label class="form-label" for="{{ form.file_mau.id_for_label }}">
+                        File mẫu văn bản
+                    </label>
+
+                    {% if mau_van_ban.file_mau %}
+                        <div class="current-file">
+                            <div class="current-file-icon">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div class="current-file-info">
+                                <strong>
+                                    {{ mau_van_ban.file_mau.name }}
+                                </strong>
+                                <span>File hiện đang được đính kèm</span>
+                            </div>
+
+                            <a
+                                href="{% url 'dashboard:template_download' mau_van_ban.ma_mau %}"
+                            >
+                                <i class="bi bi-download"></i>
+                                Tải file
+                            </a>
+                        </div>
+                    {% else %}
+                        <span class="field-help">
+                            Mẫu văn bản hiện chưa có file đính kèm.
+                        </span>
+                    {% endif %}
+
+                    <div style="margin-top: 10px;">
+                        {{ form.file_mau }}
+                    </div>
+
+                    <span class="field-help">
+                        Nếu không chọn file mới, file hiện tại sẽ được giữ nguyên.
+                    </span>
+
+                    {% for error in form.file_mau.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <!-- MÔ TẢ -->
+                <div class="form-group full-width">
+                    <label class="form-label" for="{{ form.mo_ta.id_for_label }}">
+                        Mô tả
+                    </label>
+
+                    {{ form.mo_ta }}
+
+                    {% for error in form.mo_ta.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <!-- NÚT CHỨC NĂNG -->
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'dashboard:template_list' %}"
+                    class="btn-form btn-cancel"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Hủy
+                </a>
+
+                <button type="submit" class="btn-form btn-save">
+                    <i class="bi bi-check-lg"></i>
+                    Lưu thay đổi
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

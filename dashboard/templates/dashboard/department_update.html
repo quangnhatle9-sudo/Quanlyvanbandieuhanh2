@@ -1,0 +1,251 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chỉnh sửa phòng ban{% endblock %}
+
+{% block extra_css %}
+<style>
+    .department-update-overlay {
+        position: fixed;
+        top: 70px;
+        left: 260px;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.35);
+        z-index: 1100;
+    }
+
+    .department-update-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: calc(100% - 260px);
+        background: #fff;
+        z-index: 1101;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -8px 0 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .department-update-header {
+        padding: 24px 28px;
+        border-bottom: 1px solid #e8edf3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .department-update-header h4 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #163b65;
+    }
+
+    .department-update-header p {
+        margin: 6px 0 0;
+        color: #7b8794;
+        font-size: 13px;
+    }
+
+    .department-update-close {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #f1f4f8;
+        color: #526174;
+        font-size: 23px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .department-update-close:hover {
+        background: #e3eaf2;
+        color: #163b65;
+    }
+
+    .department-update-body {
+        padding: 24px 28px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .department-update-body label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #34445a;
+    }
+
+    .department-update-body input,
+    .department-update-body select,
+    .department-update-body textarea {
+        width: 100%;
+        min-height: 42px;
+        padding: 9px 12px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 14px;
+        color: #263445;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .department-update-body input:focus,
+    .department-update-body select:focus,
+    .department-update-body textarea:focus {
+        border-color: #2875c7;
+        box-shadow: 0 0 0 3px rgba(40, 117, 199, 0.1);
+    }
+
+    .department-update-field {
+        margin-bottom: 20px;
+    }
+
+    .department-update-error {
+        margin-top: 5px;
+        color: #dc3545;
+        font-size: 12px;
+    }
+
+    .department-update-footer {
+        padding: 18px 28px;
+        border-top: 1px solid #e8edf3;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #fff;
+    }
+
+    .department-update-footer a,
+    .department-update-footer button {
+        padding: 10px 18px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .department-update-submit {
+        background: #1769aa;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .department-update-submit:hover {
+        background: #10578f;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .department-update-overlay {
+            left: 0;
+        }
+
+        .department-update-panel {
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="mb-3">
+        <small class="text-muted">
+            Quản trị hệ thống
+            <span class="mx-2">›</span>
+            Danh mục dùng chung
+            <span class="mx-2">›</span>
+            Quản lý phòng ban
+        </small>
+
+        <h3 class="fw-bold mt-2">Quản lý phòng ban</h3>
+    </div>
+</div>
+
+<div class="department-update-overlay"></div>
+
+<div class="department-update-panel">
+
+    <div class="department-update-header">
+        <div>
+            <h4>Chỉnh sửa phòng ban</h4>
+            <p>Cập nhật thông tin phòng ban trong hệ thống.</p>
+        </div>
+
+        <a href="{% url 'dashboard:department_list' %}"
+           class="department-update-close"
+           title="Đóng">
+            &times;
+        </a>
+    </div>
+
+    <div class="department-update-body">
+
+        <form method="POST" id="department-update-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="department-update-field">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="text-muted small mt-1">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="department-update-error">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </form>
+
+    </div>
+
+    <div class="department-update-footer">
+
+        <a href="{% url 'dashboard:department_list' %}"
+           class="btn btn-light border">
+            Hủy
+        </a>
+
+        <button type="submit"
+                form="department-update-form"
+                class="department-update-submit">
+            Lưu thay đổi
+        </button>
+
+    </div>
+
+</div>
+
+{% endblock %}

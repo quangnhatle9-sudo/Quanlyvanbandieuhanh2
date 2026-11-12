@@ -1,0 +1,319 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chi tiết mẫu văn bản{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-detail {
+        color: #263445;
+    }
+
+    .page-heading {
+        margin-bottom: 24px;
+    }
+
+    .breadcrumb {
+        font-size: 13px;
+        color: #8491a2;
+        margin-bottom: 12px;
+    }
+
+    .breadcrumb a {
+        color: #2563a6;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .page-heading h2 {
+        font-size: 25px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .page-heading p {
+        color: #8491a2;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+    .detail-card {
+        background: #fff;
+        border: 1px solid #e5eaf0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .detail-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #edf0f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .detail-card-header h5 {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .detail-card-body {
+        padding: 24px;
+    }
+
+    .detail-item {
+        margin-bottom: 24px;
+    }
+
+    .detail-label {
+        display: block;
+        color: #8491a2;
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+
+    .detail-value {
+        color: #263445;
+        font-size: 15px;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-description {
+        white-space: pre-line;
+        line-height: 1.7;
+        font-weight: 400;
+    }
+
+    .type-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #eaf2ff;
+        color: #2563a6;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .file-box {
+        padding: 14px 16px;
+        background: #f7f9fc;
+        border: 1px solid #e5eaf0;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .file-name {
+        overflow-wrap: anywhere;
+        font-size: 14px;
+    }
+
+    /* Nhóm nút thao tác */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .template-detail .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 36px;
+        padding: 7px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.4;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .template-detail .btn-back {
+        background: #fff;
+        color: #526174;
+        border-color: #dce2e9;
+    }
+
+    .template-detail .btn-back:hover {
+        background: #f0f2f5;
+        color: #263445;
+        border-color: #cbd3dd;
+    }
+
+    .template-detail .btn-edit {
+        background: #2563a6;
+        color: #fff;
+        border-color: #2563a6;
+    }
+
+    .template-detail .btn-edit:hover {
+        background: #1d4f86;
+        border-color: #1d4f86;
+        color: #fff;
+    }
+
+    .template-detail .btn-download {
+        background: #198754;
+        color: #fff;
+        border-color: #198754;
+    }
+
+    .template-detail .btn-download:hover {
+        background: #157347;
+        border-color: #157347;
+        color: #fff;
+    }
+
+    @media (max-width: 576px) {
+        .detail-card-body {
+            padding: 18px;
+        }
+
+        .detail-card-header {
+            padding: 18px;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="template-detail">
+
+    <div class="page-heading">
+        <div class="breadcrumb">
+            <a href="{% url 'dashboard:system_management_home' %}">
+                Quản trị hệ thống
+            </a>
+            /
+            <a href="{% url 'dashboard:template_list' %}">
+                Kho mẫu văn bản
+            </a>
+            / Chi tiết
+        </div>
+
+        <h2>CHI TIẾT MẪU VĂN BẢN</h2>
+        <p>Thông tin chi tiết của mẫu văn bản trong hệ thống.</p>
+    </div>
+
+    <div class="detail-card">
+
+        <div class="detail-card-header">
+            <h5>Thông tin mẫu văn bản</h5>
+
+            <div class="action-buttons">
+                <a href="{% url 'dashboard:template_list' %}"
+                   class="action-btn btn-back">
+                    <i class="bi bi-arrow-left"></i>
+                    Quay lại
+                </a>
+
+                <a href="{% url 'dashboard:template_update' mau.ma_mau %}"
+                   class="action-btn btn-edit">
+                    <i class="bi bi-pencil-square"></i>
+                    Chỉnh sửa
+                </a>
+            </div>
+        </div>
+
+        <div class="detail-card-body">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">Mã mẫu văn bản</span>
+                        <div class="detail-value">{{ mau.ma_mau }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">Tên mẫu văn bản</span>
+                        <div class="detail-value">{{ mau.ten_mau }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">Loại văn bản</span>
+                        <div class="detail-value">
+                            <span class="type-badge">{{ mau.ma_loai }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">Căn cứ pháp lý</span>
+                        <div class="detail-value">
+                            {{ mau.can_cu|default:"Chưa cập nhật" }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">Ngày cập nhật</span>
+                        <div class="detail-value">
+                            {{ mau.ngay_cap_nhat|date:"d/m/Y H:i" }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="detail-label">File mẫu văn bản</span>
+
+                        {% if mau.file_mau %}
+                            <div class="file-box">
+                                <span class="file-name">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    {{ mau.file_mau.name|cut:"mau_van_ban/" }}
+                                </span>
+
+                                <a href="{% url 'dashboard:template_download' mau.ma_mau %}"
+                                   class="action-btn btn-download">
+                                    <i class="bi bi-download"></i>
+                                    Tải xuống
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="detail-value text-muted">
+                                Chưa có file đính kèm
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="detail-item mb-0">
+                        <span class="detail-label">Mô tả</span>
+                        <div class="detail-value detail-description">
+                            {{ mau.mo_ta|default:"Chưa có mô tả." }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

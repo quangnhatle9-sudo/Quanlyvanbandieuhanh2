@@ -1,0 +1,392 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Chi tiết thông báo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .notification-detail-page {
+        width: 100%;
+        color: #263445;
+    }
+
+    .detail-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 16px;
+        color: #7b8794;
+        font-size: 13px;
+    }
+
+    .detail-breadcrumb a {
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 24px;
+    }
+
+    .detail-heading h1 {
+        margin: 0 0 7px;
+        color: #1e293b;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .detail-heading p {
+        margin: 0;
+        color: #7b8794;
+        font-size: 14px;
+    }
+
+    .detail-back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border: 1px solid #2563eb;
+        border-radius: 7px;
+        background: #fff;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+    .detail-back-btn:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .detail-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .035);
+    }
+
+    .detail-card-header {
+        padding: 22px 25px;
+        border-bottom: 1px solid #edf0f4;
+        background: #f8fafc;
+    }
+
+    .detail-card-header h2 {
+        margin: 0 0 12px;
+        color: #263f5c;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .detail-badges {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .detail-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .detail-badge.blue {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .detail-badge.red {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .detail-badge.orange {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .detail-badge.gray {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .detail-card-body {
+        padding: 25px;
+    }
+
+    .detail-section-title {
+        margin: 0 0 17px;
+        color: #263f5c;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .detail-content {
+        color: #475569;
+        font-size: 14px;
+        line-height: 1.8;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-divider {
+        height: 1px;
+        margin: 24px 0;
+        background: #edf0f4;
+    }
+
+    .detail-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .detail-info-item {
+        min-width: 0;
+    }
+
+    .detail-info-label {
+        margin-bottom: 7px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .detail-info-value {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-role-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .detail-role-tag {
+        padding: 5px 9px;
+        border: 1px solid #dbeafe;
+        border-radius: 5px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12px;
+    }
+
+    .detail-task-box {
+        padding: 16px 18px;
+        border: 1px solid #dbeafe;
+        border-radius: 8px;
+        background: #f8fbff;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .detail-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 16px 25px;
+        border-top: 1px solid #edf0f4;
+    }
+
+    .detail-footer .detail-back-btn {
+        background: #2563eb;
+        color: #fff;
+    }
+
+    .detail-footer .detail-back-btn:hover {
+        background: #1d4ed8;
+    }
+
+    @media (max-width: 768px) {
+        .detail-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .detail-card-header,
+        .detail-card-body {
+            padding: 18px;
+        }
+
+        .detail-info-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notification-detail-page">
+
+    <div class="detail-breadcrumb">
+        <a href="{% url 'dashboard:system_management_home' %}">
+            Quản trị hệ thống
+        </a>
+        <span>/</span>
+        <a href="{% url 'dashboard:notification_list' %}">
+            Thông báo & cảnh báo
+        </a>
+        <span>/</span>
+        <span>Chi tiết thông báo</span>
+    </div>
+
+    <div class="detail-header">
+        <div class="detail-heading">
+            <h1>Chi tiết thông báo</h1>
+            <p>Xem đầy đủ nội dung và thông tin liên quan.</p>
+        </div>
+    </div>
+
+    <div class="detail-card">
+
+        {% if thong_bao %}
+
+            <div class="detail-card-header">
+                <h2>{{ thong_bao.tieu_de }}</h2>
+
+                <div class="detail-badges">
+                    {% if thong_bao.loai_thong_bao == 'QUA_HAN' %}
+                        <span class="detail-badge red">Văn bản quá hạn</span>
+                    {% elif thong_bao.loai_thong_bao == 'SAP_DEN_HAN' %}
+                        <span class="detail-badge orange">Sắp đến hạn</span>
+                    {% else %}
+                        <span class="detail-badge blue">Thông báo hệ thống</span>
+                    {% endif %}
+
+                    {% if thong_bao.da_doc %}
+                        <span class="detail-badge gray">Đã đọc</span>
+                    {% else %}
+                        <span class="detail-badge blue">Chưa đọc</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="detail-card-body">
+
+                <h3 class="detail-section-title">Nội dung thông báo</h3>
+
+                <div class="detail-content">{{ thong_bao.noi_dung }}</div>
+
+                <div class="detail-divider"></div>
+
+                <h3 class="detail-section-title">Thông tin thông báo</h3>
+
+                <div class="detail-info-grid">
+
+                    <div class="detail-info-item">
+                        <div class="detail-info-label">Mã thông báo</div>
+                        <div class="detail-info-value">
+                            {{ thong_bao.ma_thong_bao }}
+                        </div>
+                    </div>
+
+                    <div class="detail-info-item">
+                        <div class="detail-info-label">Thời gian tạo</div>
+                        <div class="detail-info-value">
+                            {{ thong_bao.ngay_tao|date:"d/m/Y H:i" }}
+                        </div>
+                    </div>
+
+                    <div class="detail-info-item">
+                        <div class="detail-info-label">Người nhận</div>
+                        <div class="detail-info-value">
+                            {% if thong_bao.nguoi_nhan %}
+                                {{ thong_bao.nguoi_nhan }}
+                            {% elif thong_bao.cong_khai %}
+                                Tất cả người dùng
+                            {% else %}
+                                Theo vai trò được phân công
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="detail-info-item">
+                        <div class="detail-info-label">Vai trò nhận</div>
+                        <div class="detail-info-value">
+                            <div class="detail-role-list">
+                                {% for vai_tro in thong_bao.vai_tro_nhan.all %}
+                                    <span class="detail-role-tag">
+                                        {{ vai_tro.ten_vai_tro }}
+                                    </span>
+                                {% empty %}
+                                    <span>Không giới hạn vai trò</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if thong_bao.mau_van_ban %}
+                    <div class="detail-divider"></div>
+
+                    <h3 class="detail-section-title">Mẫu văn bản liên quan</h3>
+
+                    <div class="detail-info-value">
+                        {{ thong_bao.mau_van_ban.ten_mau }}
+                    </div>
+                {% endif %}
+
+                {% if nhiem_vu %}
+                    <div class="detail-divider"></div>
+
+                    <h3 class="detail-section-title">Nhiệm vụ liên quan</h3>
+
+                    <div class="detail-task-box">
+                        {{ nhiem_vu }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        {% elif la_nhiem_vu and nhiem_vu %}
+
+            <div class="detail-card-header">
+                <h2>Chi tiết nhiệm vụ</h2>
+                <div class="detail-badges">
+                    <span class="detail-badge blue">Thông báo nhiệm vụ</span>
+                </div>
+            </div>
+
+            <div class="detail-card-body">
+                <h3 class="detail-section-title">Thông tin nhiệm vụ</h3>
+                <div class="detail-task-box">
+                    {{ nhiem_vu }}
+                </div>
+            </div>
+
+        {% else %}
+
+            <div class="detail-card-body">
+                <p>Không tìm thấy nội dung thông báo.</p>
+            </div>
+
+        {% endif %}
+
+        <div class="detail-footer">
+            <a href="{% url 'dashboard:notification_list' %}{% if request.GET.vai_tro %}?vai_tro={{ request.GET.vai_tro|urlencode }}{% endif %}"
+               class="detail-back-btn">
+                ← Quay lại danh sách
+            </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
